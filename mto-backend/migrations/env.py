@@ -5,7 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.db.models import Base
+from app.db.base import Base
+# Import all models to ensure they are registered with the metadata
+from app.db import models
 
 
 # this is the Alembic Config object, which provides
