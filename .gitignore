@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info/
+.installed.cfg
+*.manifest
+*.spec
+
+# Editor-specific
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.*
+instance/
+
+# Database files
+*.sqlite3
+*.db
+*.db-journal
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Uploaded files (if applicable)
+media/
+uploads/
+
+# Docker-related (if applicable)
+Dockerfile.bak
+docker-compose.yml.bak
+*.pem
