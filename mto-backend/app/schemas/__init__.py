@@ -1,3 +1,2 @@
-from .products import ProductCreate, ProductUpdate, ProductResponse, ProductListResponse
+# Pydantic Schemas
 
-__all__ = ["ProductCreate", "ProductUpdate", "ProductResponse", "ProductListResponse"]
