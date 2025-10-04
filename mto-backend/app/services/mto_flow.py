@@ -22,3 +22,4 @@ def auto_create_production_order(db: Session, sales_order: SalesOrder) -> Produc
     )
     return production_orders.create_production_order(db, production_order_data)
 
+

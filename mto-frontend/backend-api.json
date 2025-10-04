@@ -1,0 +1,4696 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "MTO Backend",
+        "description": "MTO (Make-to-Order) Manufacturing Flow API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/components": {
+            "post": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Create Component",
+                "description": "Add a new component.",
+                "operationId": "create_component_api_v1_components_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ComponentCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "List Components",
+                "description": "List components with pagination.",
+                "operationId": "list_components_api_v1_components_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentResponse"
+                                    },
+                                    "title": "Response List Components Api V1 Components Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/components/{component_id}": {
+            "put": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Update Component",
+                "description": "Update component details.",
+                "operationId": "update_component_api_v1_components__component_id__put",
+                "parameters": [
+                    {
+                        "name": "component_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Component Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ComponentUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Get Component",
+                "description": "Get component by ID.",
+                "operationId": "get_component_api_v1_components__component_id__get",
+                "parameters": [
+                    {
+                        "name": "component_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Component Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/components/code/{part_code}": {
+            "get": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Get Component By Code",
+                "description": "Get component by part code.",
+                "operationId": "get_component_by_code_api_v1_components_code__part_code__get",
+                "parameters": [
+                    {
+                        "name": "part_code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Part Code"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/components/{component_id}/availability": {
+            "get": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Check Component Availability",
+                "description": "Check component availability.",
+                "operationId": "check_component_availability_api_v1_components__component_id__availability_get",
+                "parameters": [
+                    {
+                        "name": "component_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Component Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentAvailabilityResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/component-usage": {
+            "post": {
+                "tags": [
+                    "Component Usage"
+                ],
+                "summary": "Create Component Usage",
+                "description": "Record component usage against work order.",
+                "operationId": "create_component_usage_api_v1_component_usage_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ComponentUsageCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentUsageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Component Usage"
+                ],
+                "summary": "List Component Usages",
+                "description": "List all component usages with pagination.",
+                "operationId": "list_component_usages_api_v1_component_usage_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentUsageResponse"
+                                    },
+                                    "title": "Response List Component Usages Api V1 Component Usage Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/component-usage/{usage_id}": {
+            "get": {
+                "tags": [
+                    "Component Usage"
+                ],
+                "summary": "Get Usage",
+                "description": "Get component usage by ID.",
+                "operationId": "get_usage_api_v1_component_usage__usage_id__get",
+                "parameters": [
+                    {
+                        "name": "usage_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Usage Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComponentUsageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/component-usage/work-order/{work_order_id}": {
+            "get": {
+                "tags": [
+                    "Component Usage"
+                ],
+                "summary": "List Usage By Work Order",
+                "description": "List component usage by work order.",
+                "operationId": "list_usage_by_work_order_api_v1_component_usage_work_order__work_order_id__get",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentUsageResponse"
+                                    },
+                                    "title": "Response List Usage By Work Order Api V1 Component Usage Work Order  Work Order Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/component-usage/component/{component_id}": {
+            "get": {
+                "tags": [
+                    "Component Usage"
+                ],
+                "summary": "List Usage By Component",
+                "description": "List component usage by component.",
+                "operationId": "list_usage_by_component_api_v1_component_usage_component__component_id__get",
+                "parameters": [
+                    {
+                        "name": "component_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Component Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentUsageResponse"
+                                    },
+                                    "title": "Response List Usage By Component Api V1 Component Usage Component  Component Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/component-usage/order/{order_id}/summary": {
+            "get": {
+                "tags": [
+                    "Component Usage"
+                ],
+                "summary": "Get Order Usage Summary",
+                "description": "Summarize component usage for an order.",
+                "operationId": "get_order_usage_summary_api_v1_component_usage_order__order_id__summary_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentUsageSummaryResponse"
+                                    },
+                                    "title": "Response Get Order Usage Summary Api V1 Component Usage Order  Order Id  Summary Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/customers": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create Customer",
+                "description": "Register a new customer.",
+                "operationId": "create_customer_api_v1_customers_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomerCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "List Customers",
+                "description": "List customers with pagination.",
+                "operationId": "list_customers_api_v1_customers_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CustomerResponse"
+                                    },
+                                    "title": "Response List Customers Api V1 Customers Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/customers/{customer_id}": {
+            "put": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update Customer",
+                "description": "Update customer profile.",
+                "operationId": "update_customer_api_v1_customers__customer_id__put",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomerUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get Customer",
+                "description": "Get customer by ID.",
+                "operationId": "get_customer_api_v1_customers__customer_id__get",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/customers/{customer_id}/orders": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get Customer Order List",
+                "description": "Get orders for a customer.",
+                "operationId": "get_customer_order_list_api_v1_customers__customer_id__orders_get",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    },
+                                    "title": "Response Get Customer Order List Api V1 Customers  Customer Id  Orders Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create Order",
+                "description": "Place a new order.",
+                "operationId": "create_order_api_v1_orders_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List Orders",
+                "description": "List orders with pagination.",
+                "operationId": "list_orders_api_v1_orders_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    },
+                                    "title": "Response List Orders Api V1 Orders Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/cancel": {
+            "put": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Cancel Order Endpoint",
+                "description": "Cancel an order.",
+                "operationId": "cancel_order_endpoint_api_v1_orders__order_id__cancel_put",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get Order",
+                "description": "Get order by ID.",
+                "operationId": "get_order_api_v1_orders__order_id__get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/status": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get Order Status Endpoint",
+                "description": "Get order status with full details.",
+                "operationId": "get_order_status_endpoint_api_v1_orders__order_id__status_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderStatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/planned-orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List Order Planned Orders",
+                "description": "List planned orders for an order.",
+                "operationId": "list_order_planned_orders_api_v1_orders__order_id__planned_orders_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PlannedOrderResponse"
+                                    },
+                                    "title": "Response List Order Planned Orders Api V1 Orders  Order Id  Planned Orders Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/deliveries": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List Order Deliveries",
+                "description": "List deliveries for an order.",
+                "operationId": "list_order_deliveries_api_v1_orders__order_id__deliveries_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DeliveryResponse"
+                                    },
+                                    "title": "Response List Order Deliveries Api V1 Orders  Order Id  Deliveries Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/invoices": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List Order Invoices",
+                "description": "List invoices for an order.",
+                "operationId": "list_order_invoices_api_v1_orders__order_id__invoices_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/InvoiceResponse"
+                                    },
+                                    "title": "Response List Order Invoices Api V1 Orders  Order Id  Invoices Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/customer/{customer_id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List Orders By Customer Endpoint",
+                "description": "List orders by customer.",
+                "operationId": "list_orders_by_customer_endpoint_api_v1_orders_customer__customer_id__get",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    },
+                                    "title": "Response List Orders By Customer Endpoint Api V1 Orders Customer  Customer Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/planned-orders": {
+            "post": {
+                "tags": [
+                    "Planned Orders"
+                ],
+                "summary": "Create Planned Order",
+                "description": "Generate a planned order from order item.",
+                "operationId": "create_planned_order_api_v1_planned_orders_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PlannedOrderCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlannedOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Planned Orders"
+                ],
+                "summary": "List Planned Orders",
+                "description": "List all planned orders with pagination.",
+                "operationId": "list_planned_orders_api_v1_planned_orders_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PlannedOrderResponse"
+                                    },
+                                    "title": "Response List Planned Orders Api V1 Planned Orders Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/planned-orders/{planned_order_id}": {
+            "put": {
+                "tags": [
+                    "Planned Orders"
+                ],
+                "summary": "Update Planned Order",
+                "description": "Update planned order status/details.",
+                "operationId": "update_planned_order_api_v1_planned_orders__planned_order_id__put",
+                "parameters": [
+                    {
+                        "name": "planned_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Planned Order Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PlannedOrderUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlannedOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Planned Orders"
+                ],
+                "summary": "Get Planned Order",
+                "description": "Get planned order by ID.",
+                "operationId": "get_planned_order_api_v1_planned_orders__planned_order_id__get",
+                "parameters": [
+                    {
+                        "name": "planned_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Planned Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlannedOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/planned-orders/{planned_order_id}/convert": {
+            "put": {
+                "tags": [
+                    "Planned Orders"
+                ],
+                "summary": "Convert Planned Order To Work Order",
+                "description": "Convert planned order to work order.",
+                "operationId": "convert_planned_order_to_work_order_api_v1_planned_orders__planned_order_id__convert_put",
+                "parameters": [
+                    {
+                        "name": "planned_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Planned Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders/{work_order_id}/start": {
+            "put": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "Start Work Order Endpoint",
+                "description": "Start a work order.",
+                "operationId": "start_work_order_endpoint_api_v1_work_orders__work_order_id__start_put",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders/{work_order_id}/confirm": {
+            "put": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "Confirm Work Order Endpoint",
+                "description": "Confirm work order completion.",
+                "operationId": "confirm_work_order_endpoint_api_v1_work_orders__work_order_id__confirm_put",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkOrderConfirmRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders/{work_order_id}/consume": {
+            "put": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "Consume Components Endpoint",
+                "description": "Record component consumption for work order.",
+                "operationId": "consume_components_endpoint_api_v1_work_orders__work_order_id__consume_put",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkOrderConsumeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentUsageResponse"
+                                    },
+                                    "title": "Response Consume Components Endpoint Api V1 Work Orders  Work Order Id  Consume Put"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders/{work_order_id}/close": {
+            "put": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "Close Work Order Endpoint",
+                "description": "Close a work order.",
+                "operationId": "close_work_order_endpoint_api_v1_work_orders__work_order_id__close_put",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders/{work_order_id}": {
+            "get": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "Get Work Order",
+                "description": "Get work order by ID.",
+                "operationId": "get_work_order_api_v1_work_orders__work_order_id__get",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders/{work_order_id}/usage": {
+            "get": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "Get Work Order Usage",
+                "description": "Get component usage for work order.",
+                "operationId": "get_work_order_usage_api_v1_work_orders__work_order_id__usage_get",
+                "parameters": [
+                    {
+                        "name": "work_order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Work Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentUsageResponse"
+                                    },
+                                    "title": "Response Get Work Order Usage Api V1 Work Orders  Work Order Id  Usage Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/work-orders": {
+            "get": {
+                "tags": [
+                    "Work Orders"
+                ],
+                "summary": "List Work Orders",
+                "description": "List work orders with pagination.",
+                "operationId": "list_work_orders_api_v1_work_orders_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/WorkOrderResponse"
+                                    },
+                                    "title": "Response List Work Orders Api V1 Work Orders Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/deliveries": {
+            "post": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "Create Delivery",
+                "description": "Schedule a new delivery.",
+                "operationId": "create_delivery_api_v1_deliveries_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeliveryCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeliveryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "List Deliveries",
+                "description": "List deliveries with pagination.",
+                "operationId": "list_deliveries_api_v1_deliveries_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DeliveryResponse"
+                                    },
+                                    "title": "Response List Deliveries Api V1 Deliveries Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/deliveries/{delivery_id}/status": {
+            "put": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "Update Delivery Status Endpoint",
+                "description": "Update delivery status.",
+                "operationId": "update_delivery_status_endpoint_api_v1_deliveries__delivery_id__status_put",
+                "parameters": [
+                    {
+                        "name": "delivery_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Delivery Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeliveryStatusUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeliveryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/deliveries/{delivery_id}": {
+            "get": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "Get Delivery",
+                "description": "Get delivery by ID.",
+                "operationId": "get_delivery_api_v1_deliveries__delivery_id__get",
+                "parameters": [
+                    {
+                        "name": "delivery_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Delivery Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeliveryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/deliveries/customer/{customer_id}": {
+            "get": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "List Customer Deliveries",
+                "description": "List deliveries for a customer.",
+                "operationId": "list_customer_deliveries_api_v1_deliveries_customer__customer_id__get",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DeliveryResponse"
+                                    },
+                                    "title": "Response List Customer Deliveries Api V1 Deliveries Customer  Customer Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/deliveries/order/{order_id}": {
+            "get": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "List Order Deliveries Endpoint",
+                "description": "List deliveries for an order.",
+                "operationId": "list_order_deliveries_endpoint_api_v1_deliveries_order__order_id__get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DeliveryResponse"
+                                    },
+                                    "title": "Response List Order Deliveries Endpoint Api V1 Deliveries Order  Order Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices": {
+            "post": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Create Invoice",
+                "description": "Generate a new invoice.",
+                "operationId": "create_invoice_api_v1_invoices_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvoiceCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "List Invoices",
+                "description": "List invoices with pagination.",
+                "operationId": "list_invoices_api_v1_invoices_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/InvoiceResponse"
+                                    },
+                                    "title": "Response List Invoices Api V1 Invoices Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/{invoice_id}/pay": {
+            "put": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Pay Invoice",
+                "description": "Mark invoice as paid.",
+                "operationId": "pay_invoice_api_v1_invoices__invoice_id__pay_put",
+                "parameters": [
+                    {
+                        "name": "invoice_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Invoice Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/{invoice_id}/post": {
+            "put": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Post Invoice Endpoint",
+                "description": "Post invoice (DRAFT → POSTED).",
+                "operationId": "post_invoice_endpoint_api_v1_invoices__invoice_id__post_put",
+                "parameters": [
+                    {
+                        "name": "invoice_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Invoice Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/{invoice_id}/cancel": {
+            "put": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Cancel Invoice Endpoint",
+                "description": "Cancel an invoice.",
+                "operationId": "cancel_invoice_endpoint_api_v1_invoices__invoice_id__cancel_put",
+                "parameters": [
+                    {
+                        "name": "invoice_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Invoice Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/{invoice_id}": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Get Invoice",
+                "description": "Get invoice by ID.",
+                "operationId": "get_invoice_api_v1_invoices__invoice_id__get",
+                "parameters": [
+                    {
+                        "name": "invoice_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Invoice Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/customer/{customer_id}/outstanding": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "List Outstanding Invoices",
+                "description": "Get unpaid invoices for a customer.",
+                "operationId": "list_outstanding_invoices_api_v1_invoices_customer__customer_id__outstanding_get",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/InvoiceResponse"
+                                    },
+                                    "title": "Response List Outstanding Invoices Api V1 Invoices Customer  Customer Id  Outstanding Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/order/{order_id}": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "List Order Invoices Endpoint",
+                "description": "List invoices for an order.",
+                "operationId": "list_order_invoices_endpoint_api_v1_invoices_order__order_id__get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/InvoiceResponse"
+                                    },
+                                    "title": "Response List Order Invoices Endpoint Api V1 Invoices Order  Order Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create Product",
+                "description": "Add a new product.",
+                "operationId": "create_product_api_v1_products_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "List Products",
+                "description": "List products with pagination.",
+                "operationId": "list_products_api_v1_products_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "description": "Page number",
+                            "default": 1,
+                            "title": "Page"
+                        },
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "description": "Page size",
+                            "default": 20,
+                            "title": "Size"
+                        },
+                        "description": "Page size"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductResponse"
+                                    },
+                                    "title": "Response List Products Api V1 Products Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products/{product_id}": {
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update Product",
+                "description": "Update product details.",
+                "operationId": "update_product_api_v1_products__product_id__put",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Product Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get Product",
+                "description": "Get product by ID.",
+                "operationId": "get_product_api_v1_products__product_id__get",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Product Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products/sku/{sku}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get Product By Sku Endpoint",
+                "description": "Get product by SKU.",
+                "operationId": "get_product_by_sku_endpoint_api_v1_products_sku__sku__get",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Sku"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products/{product_id}/availability": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Check Product Availability",
+                "description": "Check product availability.",
+                "operationId": "check_product_availability_api_v1_products__product_id__availability_get",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Product Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductAvailabilityResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reporting/orders/{order_id}/flow": {
+            "get": {
+                "tags": [
+                    "Reporting"
+                ],
+                "summary": "Get Order Flow",
+                "description": "Trace order through full MTO flow.",
+                "operationId": "get_order_flow_api_v1_reporting_orders__order_id__flow_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderFlowResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reporting/production-status": {
+            "get": {
+                "tags": [
+                    "Reporting"
+                ],
+                "summary": "Get Production Summary",
+                "description": "Summarize work order statuses.",
+                "operationId": "get_production_summary_api_v1_reporting_production_status_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductionStatusSummaryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reporting/component-consumption": {
+            "get": {
+                "tags": [
+                    "Reporting"
+                ],
+                "summary": "Get Component Consumption",
+                "description": "Aggregate component usage across all work orders.",
+                "operationId": "get_component_consumption_api_v1_reporting_component_consumption_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/ComponentConsumptionResponse"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get Component Consumption Api V1 Reporting Component Consumption Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reporting/orders/{order_id}/component-usage": {
+            "get": {
+                "tags": [
+                    "Reporting"
+                ],
+                "summary": "Get Order Component Usage",
+                "description": "Get component usage summary for an order.",
+                "operationId": "get_order_component_usage_api_v1_reporting_orders__order_id__component_usage_get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderComponentUsageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reporting/customers/{customer_id}/summary": {
+            "get": {
+                "tags": [
+                    "Reporting"
+                ],
+                "summary": "Get Customer Summary",
+                "description": "Get customer order summary.",
+                "operationId": "get_customer_summary_api_v1_reporting_customers__customer_id__summary_get",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Customer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerSummaryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reporting/orders/summary": {
+            "get": {
+                "tags": [
+                    "Reporting"
+                ],
+                "summary": "Get Legacy Order Summary",
+                "description": "Legacy order summary endpoint.",
+                "operationId": "get_legacy_order_summary_api_v1_reporting_orders_summary_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "additionalProperties": true,
+                                    "type": "object",
+                                    "title": "Response Get Legacy Order Summary Api V1 Reporting Orders Summary Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/mto/auto-production-order": {
+            "post": {
+                "tags": [
+                    "MTO Flow"
+                ],
+                "summary": "Auto Create Production Order",
+                "description": "Auto-create production order (planned orders) from sales order.",
+                "operationId": "auto_create_production_order_api_v1_mto_auto_production_order_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AutoProductionOrderRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AutoProductionOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "Health Check",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AutoProductionOrderRequest": {
+                "properties": {
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id",
+                        "description": "Sales order ID to create production from"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_id"
+                ],
+                "title": "AutoProductionOrderRequest",
+                "description": "Schema for auto-creating production order from sales order."
+            },
+            "AutoProductionOrderResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "planned_orders_created": {
+                        "type": "integer",
+                        "title": "Planned Orders Created"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message",
+                    "order_id",
+                    "planned_orders_created"
+                ],
+                "title": "AutoProductionOrderResponse",
+                "description": "Schema for auto production order response."
+            },
+            "ComponentAvailabilityResponse": {
+                "properties": {
+                    "component_id": {
+                        "type": "integer",
+                        "title": "Component Id"
+                    },
+                    "part_code": {
+                        "type": "string",
+                        "title": "Part Code"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "cost": {
+                        "type": "number",
+                        "title": "Cost"
+                    },
+                    "total_consumed": {
+                        "type": "number",
+                        "title": "Total Consumed"
+                    },
+                    "note": {
+                        "type": "string",
+                        "title": "Note"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "component_id",
+                    "part_code",
+                    "name",
+                    "cost",
+                    "total_consumed",
+                    "note"
+                ],
+                "title": "ComponentAvailabilityResponse",
+                "description": "Schema for component availability check."
+            },
+            "ComponentConsumptionResponse": {
+                "properties": {
+                    "component_id": {
+                        "type": "integer",
+                        "title": "Component Id"
+                    },
+                    "part_code": {
+                        "type": "string",
+                        "title": "Part Code"
+                    },
+                    "component_name": {
+                        "type": "string",
+                        "title": "Component Name"
+                    },
+                    "total_consumed": {
+                        "type": "number",
+                        "title": "Total Consumed"
+                    },
+                    "usage_count": {
+                        "type": "integer",
+                        "title": "Usage Count"
+                    },
+                    "total_cost": {
+                        "type": "number",
+                        "title": "Total Cost"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "component_id",
+                    "part_code",
+                    "component_name",
+                    "total_consumed",
+                    "usage_count",
+                    "total_cost"
+                ],
+                "title": "ComponentConsumptionResponse",
+                "description": "Schema for component consumption summary."
+            },
+            "ComponentCreate": {
+                "properties": {
+                    "part_code": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "title": "Part Code",
+                        "description": "Unique part code"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Name",
+                        "description": "Component name"
+                    },
+                    "cost": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "title": "Cost",
+                        "description": "Component cost"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "part_code",
+                    "name",
+                    "cost"
+                ],
+                "title": "ComponentCreate",
+                "description": "Schema for creating a new component."
+            },
+            "ComponentResponse": {
+                "properties": {
+                    "part_code": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "title": "Part Code",
+                        "description": "Unique part code"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Name",
+                        "description": "Component name"
+                    },
+                    "cost": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "title": "Cost",
+                        "description": "Component cost"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "part_code",
+                    "name",
+                    "cost",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ComponentResponse",
+                "description": "Schema for component response."
+            },
+            "ComponentUpdate": {
+                "properties": {
+                    "part_code": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Part Code"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 100,
+                                "minLength": 1
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "cost": {
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "minimum": 0.0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Cost"
+                    }
+                },
+                "type": "object",
+                "title": "ComponentUpdate",
+                "description": "Schema for updating component details."
+            },
+            "ComponentUsageCreate": {
+                "properties": {
+                    "work_order_id": {
+                        "type": "integer",
+                        "title": "Work Order Id",
+                        "description": "Work order ID"
+                    },
+                    "component_id": {
+                        "type": "integer",
+                        "title": "Component Id",
+                        "description": "Component ID"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Quantity",
+                        "description": "Quantity used"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "work_order_id",
+                    "component_id",
+                    "quantity"
+                ],
+                "title": "ComponentUsageCreate",
+                "description": "Schema for creating component usage record."
+            },
+            "ComponentUsageResponse": {
+                "properties": {
+                    "work_order_id": {
+                        "type": "integer",
+                        "title": "Work Order Id",
+                        "description": "Work order ID"
+                    },
+                    "component_id": {
+                        "type": "integer",
+                        "title": "Component Id",
+                        "description": "Component ID"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Quantity",
+                        "description": "Quantity used"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "work_order_id",
+                    "component_id",
+                    "quantity",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ComponentUsageResponse",
+                "description": "Schema for component usage response."
+            },
+            "ComponentUsageSummaryResponse": {
+                "properties": {
+                    "component_id": {
+                        "type": "integer",
+                        "title": "Component Id"
+                    },
+                    "part_code": {
+                        "type": "string",
+                        "title": "Part Code"
+                    },
+                    "component_name": {
+                        "type": "string",
+                        "title": "Component Name"
+                    },
+                    "total_quantity": {
+                        "type": "number",
+                        "title": "Total Quantity"
+                    },
+                    "usage_count": {
+                        "type": "integer",
+                        "title": "Usage Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "component_id",
+                    "part_code",
+                    "component_name",
+                    "total_quantity",
+                    "usage_count"
+                ],
+                "title": "ComponentUsageSummaryResponse",
+                "description": "Schema for component usage summary."
+            },
+            "CustomerCreate": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Name",
+                        "description": "Customer name"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email",
+                        "description": "Customer email"
+                    },
+                    "phone": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 50
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Phone",
+                        "description": "Customer phone"
+                    },
+                    "address": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Address",
+                        "description": "Customer address"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "CustomerCreate",
+                "description": "Schema for registering a new customer."
+            },
+            "CustomerResponse": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Name",
+                        "description": "Customer name"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email",
+                        "description": "Customer email"
+                    },
+                    "phone": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 50
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Phone",
+                        "description": "Customer phone"
+                    },
+                    "address": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Address",
+                        "description": "Customer address"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "CustomerResponse",
+                "description": "Schema for customer response."
+            },
+            "CustomerSummaryResponse": {
+                "properties": {
+                    "customer_id": {
+                        "type": "integer",
+                        "title": "Customer Id"
+                    },
+                    "customer_name": {
+                        "type": "string",
+                        "title": "Customer Name"
+                    },
+                    "total_orders": {
+                        "type": "integer",
+                        "title": "Total Orders"
+                    },
+                    "total_spent": {
+                        "type": "number",
+                        "title": "Total Spent"
+                    },
+                    "orders": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Orders"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "customer_id",
+                    "customer_name",
+                    "total_orders",
+                    "total_spent",
+                    "orders"
+                ],
+                "title": "CustomerSummaryResponse",
+                "description": "Schema for customer order summary."
+            },
+            "CustomerUpdate": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 100,
+                                "minLength": 1
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email"
+                    },
+                    "phone": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 50
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Phone"
+                    },
+                    "address": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Address"
+                    }
+                },
+                "type": "object",
+                "title": "CustomerUpdate",
+                "description": "Schema for updating customer profile."
+            },
+            "DeliveryCreate": {
+                "properties": {
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id",
+                        "description": "Order ID"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Quantity",
+                        "description": "Delivery quantity"
+                    },
+                    "delivered_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivered At",
+                        "description": "Delivery date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_id",
+                    "quantity"
+                ],
+                "title": "DeliveryCreate",
+                "description": "Schema for scheduling a delivery."
+            },
+            "DeliveryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "delivered_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivered At"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "title": "Quantity"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "order_id",
+                    "delivered_at",
+                    "status",
+                    "quantity",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "DeliveryResponse",
+                "description": "Schema for delivery response."
+            },
+            "DeliveryStatus": {
+                "type": "string",
+                "enum": [
+                    "PENDING",
+                    "SHIPPED",
+                    "DELIVERED",
+                    "CANCELLED"
+                ],
+                "title": "DeliveryStatus"
+            },
+            "DeliveryStatusUpdate": {
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/DeliveryStatus",
+                        "description": "New delivery status"
+                    },
+                    "delivered_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivered At",
+                        "description": "Actual delivery date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "status"
+                ],
+                "title": "DeliveryStatusUpdate",
+                "description": "Schema for updating delivery status."
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "InvoiceCreate": {
+                "properties": {
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id",
+                        "description": "Order ID"
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "title": "Total Amount",
+                        "description": "Total invoice amount"
+                    },
+                    "invoice_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Invoice Date",
+                        "description": "Invoice date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_id",
+                    "total_amount"
+                ],
+                "title": "InvoiceCreate",
+                "description": "Schema for generating an invoice."
+            },
+            "InvoiceResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "invoice_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Invoice Date"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "title": "Total Amount"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "order_id",
+                    "invoice_date",
+                    "status",
+                    "total_amount",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "InvoiceResponse",
+                "description": "Schema for invoice response."
+            },
+            "OrderComponentUsageResponse": {
+                "properties": {
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "components": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Components"
+                    },
+                    "total_cost": {
+                        "type": "number",
+                        "title": "Total Cost"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_id",
+                    "components",
+                    "total_cost"
+                ],
+                "title": "OrderComponentUsageResponse",
+                "description": "Schema for order component usage."
+            },
+            "OrderCreate": {
+                "properties": {
+                    "customer_id": {
+                        "type": "integer",
+                        "title": "Customer Id",
+                        "description": "Customer ID"
+                    },
+                    "items": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "minItems": 1,
+                        "title": "Items",
+                        "description": "Order items"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "customer_id",
+                    "items"
+                ],
+                "title": "OrderCreate",
+                "description": "Schema for placing a new order."
+            },
+            "OrderFlowResponse": {
+                "properties": {
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "order_status": {
+                        "type": "string",
+                        "title": "Order Status"
+                    },
+                    "customer_name": {
+                        "type": "string",
+                        "title": "Customer Name"
+                    },
+                    "planned_orders": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Planned Orders"
+                    },
+                    "work_orders": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Work Orders"
+                    },
+                    "deliveries": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Deliveries"
+                    },
+                    "invoices": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Invoices"
+                    },
+                    "component_usage": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Component Usage"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_id",
+                    "order_status",
+                    "customer_name",
+                    "planned_orders",
+                    "work_orders",
+                    "deliveries",
+                    "invoices",
+                    "component_usage"
+                ],
+                "title": "OrderFlowResponse",
+                "description": "Schema for order flow trace response."
+            },
+            "OrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "customer_id": {
+                        "type": "integer",
+                        "title": "Customer Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "order_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Order Date"
+                    },
+                    "delivery_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivery Date"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "customer_id",
+                    "status",
+                    "order_date",
+                    "delivery_date",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "OrderResponse",
+                "description": "Schema for order response."
+            },
+            "OrderStatusResponse": {
+                "properties": {
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "order_date": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order Date"
+                    },
+                    "delivery_date": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivery Date"
+                    },
+                    "customer_id": {
+                        "type": "integer",
+                        "title": "Customer Id"
+                    },
+                    "items_count": {
+                        "type": "integer",
+                        "title": "Items Count"
+                    },
+                    "work_orders": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Work Orders"
+                    },
+                    "deliveries": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Deliveries"
+                    },
+                    "invoices": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Invoices"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_id",
+                    "status",
+                    "order_date",
+                    "delivery_date",
+                    "customer_id",
+                    "items_count",
+                    "work_orders",
+                    "deliveries",
+                    "invoices"
+                ],
+                "title": "OrderStatusResponse",
+                "description": "Schema for order status response."
+            },
+            "PlannedOrderCreate": {
+                "properties": {
+                    "order_item_id": {
+                        "type": "integer",
+                        "title": "Order Item Id",
+                        "description": "Order item ID"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Quantity",
+                        "description": "Planned quantity"
+                    },
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id",
+                        "description": "Order ID"
+                    },
+                    "planned_start": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned Start",
+                        "description": "Planned start date"
+                    },
+                    "planned_end": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned End",
+                        "description": "Planned end date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "order_item_id",
+                    "quantity",
+                    "order_id"
+                ],
+                "title": "PlannedOrderCreate",
+                "description": "Schema for generating a planned order."
+            },
+            "PlannedOrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "order_item_id": {
+                        "type": "integer",
+                        "title": "Order Item Id"
+                    },
+                    "order_id": {
+                        "type": "integer",
+                        "title": "Order Id"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "title": "Quantity"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "planned_start": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned Start"
+                    },
+                    "planned_end": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned End"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "order_item_id",
+                    "order_id",
+                    "quantity",
+                    "status",
+                    "planned_start",
+                    "planned_end",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "PlannedOrderResponse",
+                "description": "Schema for planned order response."
+            },
+            "PlannedOrderStatus": {
+                "type": "string",
+                "enum": [
+                    "PLANNED",
+                    "CONVERTED",
+                    "CANCELLED"
+                ],
+                "title": "PlannedOrderStatus"
+            },
+            "PlannedOrderUpdate": {
+                "properties": {
+                    "status": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PlannedOrderStatus"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "quantity": {
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "exclusiveMinimum": 0.0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Quantity"
+                    },
+                    "planned_start": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned Start"
+                    },
+                    "planned_end": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned End"
+                    }
+                },
+                "type": "object",
+                "title": "PlannedOrderUpdate",
+                "description": "Schema for updating planned order."
+            },
+            "ProductAvailabilityResponse": {
+                "properties": {
+                    "product_id": {
+                        "type": "integer",
+                        "title": "Product Id"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "title": "Sku"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "price": {
+                        "type": "number",
+                        "title": "Price"
+                    },
+                    "note": {
+                        "type": "string",
+                        "title": "Note"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "product_id",
+                    "sku",
+                    "name",
+                    "price",
+                    "note"
+                ],
+                "title": "ProductAvailabilityResponse",
+                "description": "Schema for product availability check."
+            },
+            "ProductCreate": {
+                "properties": {
+                    "sku": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "title": "Sku",
+                        "description": "Stock keeping unit"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Name",
+                        "description": "Product name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description",
+                        "description": "Product description"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "title": "Price",
+                        "description": "Product price"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "sku",
+                    "name",
+                    "price"
+                ],
+                "title": "ProductCreate",
+                "description": "Schema for creating a new product."
+            },
+            "ProductResponse": {
+                "properties": {
+                    "sku": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "title": "Sku",
+                        "description": "Stock keeping unit"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Name",
+                        "description": "Product name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description",
+                        "description": "Product description"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "title": "Price",
+                        "description": "Product price"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "sku",
+                    "name",
+                    "price",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ProductResponse",
+                "description": "Schema for product response."
+            },
+            "ProductUpdate": {
+                "properties": {
+                    "sku": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sku"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 100,
+                                "minLength": 1
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "price": {
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "minimum": 0.0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Price"
+                    }
+                },
+                "type": "object",
+                "title": "ProductUpdate",
+                "description": "Schema for updating product details."
+            },
+            "ProductionStatusSummaryResponse": {
+                "properties": {
+                    "total_work_orders": {
+                        "type": "integer",
+                        "title": "Total Work Orders"
+                    },
+                    "pending": {
+                        "type": "integer",
+                        "title": "Pending"
+                    },
+                    "in_progress": {
+                        "type": "integer",
+                        "title": "In Progress"
+                    },
+                    "done": {
+                        "type": "integer",
+                        "title": "Done"
+                    },
+                    "cancelled": {
+                        "type": "integer",
+                        "title": "Cancelled"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "total_work_orders",
+                    "pending",
+                    "in_progress",
+                    "done",
+                    "cancelled"
+                ],
+                "title": "ProductionStatusSummaryResponse",
+                "description": "Schema for production status summary."
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            },
+            "WorkOrderConfirmRequest": {
+                "properties": {
+                    "produced_qty": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Produced Qty",
+                        "description": "Actual quantity produced"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "produced_qty"
+                ],
+                "title": "WorkOrderConfirmRequest",
+                "description": "Schema for confirming work order completion."
+            },
+            "WorkOrderConsumeRequest": {
+                "properties": {
+                    "components": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "minItems": 1,
+                        "title": "Components",
+                        "description": "Components to consume"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "components"
+                ],
+                "title": "WorkOrderConsumeRequest",
+                "description": "Schema for consuming components."
+            },
+            "WorkOrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "planned_order_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Planned Order Id"
+                    },
+                    "order_item_id": {
+                        "type": "integer",
+                        "title": "Order Item Id"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "title": "Quantity"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "start_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Start Date"
+                    },
+                    "end_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "End Date"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "planned_order_id",
+                    "order_item_id",
+                    "quantity",
+                    "status",
+                    "start_date",
+                    "end_date",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "WorkOrderResponse",
+                "description": "Schema for work order response."
+            }
+        }
+    }
+}

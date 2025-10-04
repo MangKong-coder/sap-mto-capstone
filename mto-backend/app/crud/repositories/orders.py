@@ -4,8 +4,8 @@ Provides primitive CRUD operations for database access.
 """
 
 from typing import List, Optional
-from sqlalchemy.orm import Session
-from app.models import Order
+from sqlalchemy.orm import Session, joinedload
+from app.models import Order, Customer, WorkCenter, OrderItem
 
 
 def create_order(db: Session, data: dict) -> Order:
@@ -97,3 +97,54 @@ def delete_order(db: Session, order_id: int) -> bool:
     db.delete(db_order)
     db.commit()
     return True
+
+
+def list_orders_with_details(db: Session, skip: int = 0, limit: int = 20) -> List[Order]:
+    """
+    List orders with customer, work center, and order items (with products) eagerly loaded.
+    
+    This function is optimized for frontend display by preloading all necessary relationships
+    to avoid N+1 query problems.
+
+    Args:
+        db: Database session
+        skip: Number of records to skip
+        limit: Maximum number of records to return
+
+    Returns:
+        List of Order instances with relationships loaded
+    """
+    return (
+        db.query(Order)
+        .options(
+            joinedload(Order.customer),
+            joinedload(Order.work_center),
+            joinedload(Order.items).joinedload(OrderItem.product)
+        )
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_order_with_details(db: Session, order_id: int) -> Optional[Order]:
+    """
+    Get a single order with all relationships loaded.
+
+    Args:
+        db: Database session
+        order_id: Order ID
+
+    Returns:
+        Order instance with relationships loaded if found, None otherwise
+    """
+    return (
+        db.query(Order)
+        .options(
+            joinedload(Order.customer),
+            joinedload(Order.work_center),
+            joinedload(Order.items).joinedload(OrderItem.product)
+        )
+        .filter(Order.id == order_id)
+        .first()
+    )

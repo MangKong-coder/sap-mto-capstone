@@ -61,3 +61,4 @@ def delete_delivery(db: Session, delivery_id: int) -> bool:
     db.commit()
     return True
 
+

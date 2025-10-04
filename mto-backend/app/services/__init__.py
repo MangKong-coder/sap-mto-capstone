@@ -38,6 +38,8 @@ from app.services.order_service import (
     list_orders_by_customer,
     get_order_by_id_service,
     list_orders_service,
+    list_orders_enriched,
+    get_order_enriched,
     OrderServiceError,
     OrderValidationError,
     OrderNotFoundError,
@@ -243,3 +245,4 @@ __all__ = [
     "ReportingServiceError",
     "ReportNotFoundError",
 ]
+

@@ -21,6 +21,8 @@ from app.crud.repositories import (
     create_order,
     get_order_by_id,
     list_orders,
+    list_orders_with_details,
+    get_order_with_details,
     update_order,
     delete_order,
     # OrderItem
@@ -86,6 +88,8 @@ __all__ = [
     "create_order",
     "get_order_by_id",
     "list_orders",
+    "list_orders_with_details",
+    "get_order_with_details",
     "update_order",
     "delete_order",
     # OrderItem
@@ -133,3 +137,4 @@ __all__ = [
     # OrderComponentUsage (view)
     "list_order_component_usage",
 ]
+

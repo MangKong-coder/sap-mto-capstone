@@ -71,3 +71,4 @@ def delete_sales_order(db: Session, order_id: int) -> bool:
     db.commit()
     return True
 
+

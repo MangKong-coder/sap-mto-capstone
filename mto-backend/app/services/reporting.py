@@ -38,3 +38,4 @@ def get_order_summary(db: Session) -> Dict[str, Any]:
         }
     }
 
+

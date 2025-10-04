@@ -20,6 +20,17 @@ class OrderStatus(enum.Enum):
     CANCELLED = "CANCELLED"
     COMPLETED = "COMPLETED"
 
+class CustomerTypes(enum.Enum):
+    DEPARTMENT = "DEPARTMENT"
+    CAMPUS = "CAMPUS"
+    STUDENT = "STUDENT"
+    VENDOR = "VENDOR"
+
+class OrderPriorities(enum.Enum):
+    STANDARD = "STANDARD"
+    URGENT = "URGENT"
+    RUSH = "RUSH"
+
 class PlannedOrderStatus(enum.Enum):
     PLANNED = "PLANNED"
     CONVERTED = "CONVERTED"
@@ -53,6 +64,7 @@ class Customer(TimestampMixin, Base):
     email = Column(String(200))
     phone = Column(String(50))
     address = Column(Text)
+    customer_type = Column(SAEnum(CustomerTypes, name="customer_types"), nullable=False, default=CustomerTypes.DEPARTMENT)
 
     orders = relationship("Order", back_populates="customer", cascade="all, delete-orphan")
 
@@ -68,6 +80,15 @@ class Product(TimestampMixin, Base):
     order_items = relationship("OrderItem", back_populates="product")
 
 
+class WorkCenter(TimestampMixin, Base):
+    __tablename__ = "work_centers"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
+    description = Column(Text)
+    address = Column(Text)
+
+    orders = relationship("Order", back_populates="work_center")
+
 class Order(TimestampMixin, Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True)
@@ -75,12 +96,14 @@ class Order(TimestampMixin, Base):
     status = Column(SAEnum(OrderStatus, name="order_status"), nullable=False, default=OrderStatus.NEW)
     order_date = Column(DateTime(timezone=True), nullable=False, default=func.now())
     delivery_date = Column(DateTime(timezone=True))
-
+    priority = Column(SAEnum(OrderPriorities, name="order_priority"), nullable=False, default=OrderPriorities.STANDARD)
     customer = relationship("Customer", back_populates="orders")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
     planned_orders = relationship("PlannedOrder", back_populates="order")
     deliveries = relationship("Delivery", back_populates="order")
     invoices = relationship("Invoice", back_populates="order")
+    work_center_id = Column(Integer, ForeignKey("work_centers.id", ondelete="RESTRICT"), nullable=False)
+    work_center = relationship("WorkCenter", back_populates="orders")
 
 
 class OrderItem(TimestampMixin, Base):

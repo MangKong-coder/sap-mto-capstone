@@ -38,3 +38,4 @@ class SalesOrderResponse(SalesOrderBase):
     class Config:
         from_attributes = True
 
+

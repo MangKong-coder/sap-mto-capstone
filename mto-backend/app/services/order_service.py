@@ -12,6 +12,8 @@ from app.crud.repositories import (
     create_order,
     get_order_by_id,
     list_orders,
+    list_orders_with_details,
+    get_order_with_details,
     update_order,
     create_order_item,
     get_customer_by_id,
@@ -278,3 +280,113 @@ def list_orders_service(db: Session, skip: int = 0, limit: int = 10) -> List[Ord
         List of Order instances
     """
     return list_orders(db, skip=skip, limit=limit)
+
+
+def list_orders_enriched(db: Session, skip: int = 0, limit: int = 20) -> List[Dict[str, Any]]:
+    """
+    Get enriched order list with customer and product details for frontend display.
+    
+    This function returns orders with all necessary relationship data preloaded
+    and formatted for frontend consumption, avoiding N+1 queries.
+    
+    Args:
+        db: Database session
+        skip: Number of records to skip
+        limit: Maximum number of records to return
+    
+    Returns:
+        List of enriched order dictionaries
+    """
+    orders = list_orders_with_details(db, skip, limit)
+    
+    enriched = []
+    for order in orders:
+        # Build order items with product details
+        items_with_products = []
+        for item in order.items:
+            items_with_products.append({
+                "id": item.id,
+                "product_id": item.product_id,
+                "product_sku": item.product.sku,
+                "product_name": item.product.name,
+                "quantity": item.quantity,
+                "unit_price": item.unit_price,
+            })
+        
+        # Calculate totals
+        total_quantity = sum(item.quantity for item in order.items)
+        net_value = sum(item.quantity * item.unit_price for item in order.items)
+        
+        # Build enriched response
+        enriched.append({
+            "id": order.id,
+            "customer_id": order.customer_id,
+            "customer_name": order.customer.name,
+            "customer_type": order.customer.customer_type.value,
+            "status": order.status.value,
+            "order_date": order.order_date,
+            "delivery_date": order.delivery_date,
+            "priority": order.priority.value,
+            "work_center_id": order.work_center_id,
+            "work_center_name": order.work_center.name,
+            "items": items_with_products,
+            "total_quantity": total_quantity,
+            "net_value": net_value,
+            "created_at": order.created_at,
+            "updated_at": order.updated_at,
+        })
+    
+    return enriched
+
+
+def get_order_enriched(db: Session, order_id: int) -> Dict[str, Any]:
+    """
+    Get a single enriched order with all relationship details.
+    
+    Args:
+        db: Database session
+        order_id: Order ID
+    
+    Returns:
+        Enriched order dictionary
+        
+    Raises:
+        OrderNotFoundError: If order is not found
+    """
+    order = get_order_with_details(db, order_id)
+    if not order:
+        raise OrderNotFoundError(f"Order {order_id} not found")
+    
+    # Build order items with product details
+    items_with_products = []
+    for item in order.items:
+        items_with_products.append({
+            "id": item.id,
+            "product_id": item.product_id,
+            "product_sku": item.product.sku,
+            "product_name": item.product.name,
+            "quantity": item.quantity,
+            "unit_price": item.unit_price,
+        })
+    
+    # Calculate totals
+    total_quantity = sum(item.quantity for item in order.items)
+    net_value = sum(item.quantity * item.unit_price for item in order.items)
+    
+    return {
+        "id": order.id,
+        "customer_id": order.customer_id,
+        "customer_name": order.customer.name,
+        "customer_type": order.customer.customer_type.value,
+        "status": order.status.value,
+        "order_date": order.order_date,
+        "delivery_date": order.delivery_date,
+        "priority": order.priority.value,
+        "work_center_id": order.work_center_id,
+        "work_center_name": order.work_center.name,
+        "items": items_with_products,
+        "total_quantity": total_quantity,
+        "net_value": net_value,
+        "created_at": order.created_at,
+        "updated_at": order.updated_at,
+    }
