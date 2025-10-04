@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import sales_orders, production_orders, deliveries, users
+from app.api.api_router import api_router
 from app.core.config import settings
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
+    description="MTO (Make-to-Order) Manufacturing Flow API",
+    version="1.0.0",
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
@@ -18,11 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(sales_orders.router, prefix=f"{settings.API_V1_STR}/sales-orders", tags=["sales-orders"])
-app.include_router(production_orders.router, prefix=f"{settings.API_V1_STR}/production-orders", tags=["production-orders"])
-app.include_router(deliveries.router, prefix=f"{settings.API_V1_STR}/deliveries", tags=["deliveries"])
-app.include_router(users.router, prefix=f"{settings.API_V1_STR}/users", tags=["users"])
+# Include main API router with all domain routes
+app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
 @app.get("/")
