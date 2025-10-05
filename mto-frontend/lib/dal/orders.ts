@@ -8,6 +8,34 @@
 
 import { SalesOrder } from '../types'
 
+export interface OrderStatusResponse {
+  order_id: number
+  status: string
+  order_date?: string
+  delivery_date?: string
+  customer_id: number
+  items_count: number
+  work_orders: Array<{
+    id: number
+    status: string
+    quantity: number
+    start_date?: string
+    end_date?: string | null
+  }>
+  deliveries: Array<{
+    id: number
+    status: string
+    quantity: number
+    delivered_at?: string | null
+  }>
+  invoices: Array<{
+    id: number
+    status: string
+    total_amount: number
+    invoice_date?: string | null
+  }>
+}
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
 
 /**
@@ -31,6 +59,25 @@ function transformBackendOrder(backendOrder: any): SalesOrder {
 }
 
 /**
+ * Fetch consolidated order status and document flow
+ */
+export async function getOrderStatus(orderId: string): Promise<OrderStatusResponse> {
+  try {
+    const response = await fetch(`${API_BASE}/orders/${orderId}/status`)
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch order status: ${response.status}`)
+    }
+
+    const statusData: OrderStatusResponse = await response.json()
+    return statusData
+  } catch (error) {
+    console.error('Error fetching order status:', error)
+    throw error instanceof Error ? error : new Error('Failed to fetch order status')
+  }
+}
+
+/**
  * Map backend status to frontend status
  */
 function mapBackendStatus(backendStatus: string): SalesOrder['status'] {
@@ -40,7 +87,7 @@ function mapBackendStatus(backendStatus: string): SalesOrder['status'] {
     'IN_PROGRESS': 'In Production',
     'COMPLETED': 'Delivered',
     'BILLED': 'Billed',
-    'CANCELLED': 'Open'
+    'CANCELLED': 'Cancelled'
   }
   return statusMap[backendStatus] || 'Open'
 }

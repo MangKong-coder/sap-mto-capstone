@@ -6,7 +6,7 @@ export interface SalesOrder {
   material: string // School merchandise item
   quantity: number
   deliveryDate: string
-  status: "Open" | "In Planning" | "In Production" | "Delivered" | "Billed"
+  status: "Open" | "In Planning" | "In Production" | "Delivered" | "Billed" | "Cancelled"
   createdDate: string
   netValue: number
   plant: string // Bookstore location

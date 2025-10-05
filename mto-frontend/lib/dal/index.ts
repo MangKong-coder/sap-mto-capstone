@@ -12,6 +12,8 @@ export {
   createOrder,
   cancelOrder,
   getOrdersByCustomer,
+  getOrderStatus,
+  type OrderStatusResponse,
 } from './orders'
 
 // Customers DAL
