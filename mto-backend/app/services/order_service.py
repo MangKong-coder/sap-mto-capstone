@@ -42,16 +42,19 @@ class OrderCancellationError(OrderServiceError):
     pass
 
 
-def place_order(db: Session, customer_id: int, items: List[Dict[str, Any]]) -> Order:
+def place_order(db: Session, customer_id: int, items: List[Dict[str, Any]], delivery_date: datetime = None, priority: str = "STANDARD", work_center_id: int = None) -> Order:
     """
     Place a new order with validation.
     
-    Validates customer exists, products exist, and creates order with items.
+    Validates customer exists, products exist, work center exists, and creates order with items.
     
     Args:
         db: Database session
         customer_id: Customer ID
         items: List of dicts with keys: product_id, quantity, unit_price (optional)
+        delivery_date: Optional delivery date
+        priority: Order priority (STANDARD, URGENT, RUSH)
+        work_center_id: Work center ID for fulfillment
     
     Returns:
         Created Order instance with items
@@ -63,6 +66,21 @@ def place_order(db: Session, customer_id: int, items: List[Dict[str, Any]]) -> O
     customer = get_customer_by_id(db, customer_id)
     if not customer:
         raise OrderValidationError(f"Customer with ID {customer_id} not found")
+    
+    # Validate work center exists if provided
+    work_center = None
+    if work_center_id:
+        from app.crud.work_centers import get_work_center
+        work_center = get_work_center(db, work_center_id)
+        if not work_center:
+            raise OrderValidationError(f"Work center with ID {work_center_id} not found")
+    
+    # Validate priority
+    from app.models import OrderPriorities
+    try:
+        priority_enum = OrderPriorities(priority)
+    except ValueError:
+        raise OrderValidationError(f"Invalid priority: {priority}. Must be one of: {[p.value for p in OrderPriorities]}")
     
     # Validate items
     if not items or len(items) == 0:
@@ -98,6 +116,9 @@ def place_order(db: Session, customer_id: int, items: List[Dict[str, Any]]) -> O
             "customer_id": customer_id,
             "status": OrderStatus.NEW,
             "order_date": datetime.now(),
+            "delivery_date": delivery_date,
+            "priority": priority_enum,
+            "work_center_id": work_center_id,
         }
         order = create_order(db, order_data)
         

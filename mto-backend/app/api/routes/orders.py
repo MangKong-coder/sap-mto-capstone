@@ -44,7 +44,14 @@ def create_order(
 ):
     """Place a new order."""
     try:
-        result = place_order(db, order.customer_id, order.items)
+        result = place_order(
+            db, 
+            order.customer_id, 
+            order.items,
+            delivery_date=order.delivery_date,
+            priority=order.priority or "STANDARD",
+            work_center_id=order.work_center_id
+        )
         return result
     except OrderValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))

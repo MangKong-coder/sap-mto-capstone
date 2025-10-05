@@ -11,6 +11,7 @@ from app.api.routes import (
     orders,
     planned_orders,
     work_orders,
+    work_centers,
     deliveries,
     invoices,
     products,
@@ -28,6 +29,7 @@ api_router.include_router(customers.router)
 api_router.include_router(orders.router)
 api_router.include_router(planned_orders.router)
 api_router.include_router(work_orders.router)
+api_router.include_router(work_centers.router)
 api_router.include_router(deliveries.router)
 api_router.include_router(invoices.router)
 api_router.include_router(products.router)

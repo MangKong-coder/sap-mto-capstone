@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2 } from "lucide-react"
-import { createOrder, getCustomers, getProducts, type Customer, type Product } from "@/lib/dal"
+import { createOrder, getCustomers, getProducts, getWorkCenters, type Customer, type Product, type WorkCenter } from "@/lib/dal"
 import { toast } from "sonner"
 
 interface CreateSalesOrderDialogProps {
@@ -31,6 +31,7 @@ export function CreateSalesOrderDialog({ open, onOpenChange, onOrderCreated }: C
   
   const [customers, setCustomers] = useState<Customer[]>([])
   const [products, setProducts] = useState<Product[]>([])
+  const [workCenters, setWorkCenters] = useState<WorkCenter[]>([])
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
@@ -40,12 +41,14 @@ export function CreateSalesOrderDialog({ open, onOpenChange, onOrderCreated }: C
       const loadData = async () => {
         setLoading(true)
         try {
-          const [fetchedCustomers, fetchedProducts] = await Promise.all([
+          const [fetchedCustomers, fetchedProducts, fetchedWorkCenters] = await Promise.all([
             getCustomers(1, 100),
-            getProducts(1, 100)
+            getProducts(1, 100),
+            getWorkCenters(1, 100)
           ])
           setCustomers(fetchedCustomers)
           setProducts(fetchedProducts)
+          setWorkCenters(fetchedWorkCenters)
         } catch (error) {
           console.error('Failed to load data:', error)
           toast.error('Failed to load data for order creation')
@@ -62,6 +65,26 @@ export function CreateSalesOrderDialog({ open, onOpenChange, onOrderCreated }: C
     setSubmitting(true)
     
     try {
+      // Validate required fields
+      if (!formData.customerType) {
+        throw new Error('Please select a customer type')
+      }
+      if (!formData.customer) {
+        throw new Error('Please select a customer')
+      }
+      if (!formData.material) {
+        throw new Error('Please select a product')
+      }
+      if (!formData.quantity || parseFloat(formData.quantity) <= 0) {
+        throw new Error('Please enter a valid quantity')
+      }
+      if (!formData.deliveryDate) {
+        throw new Error('Please select a delivery date')
+      }
+      if (!formData.plant) {
+        throw new Error('Please select a work center')
+      }
+
       const selectedCustomer = customers.find(c => c.id.toString() === formData.customer)
       const selectedProduct = products.find(p => p.id.toString() === formData.material)
       
@@ -69,19 +92,17 @@ export function CreateSalesOrderDialog({ open, onOpenChange, onOrderCreated }: C
         throw new Error('Invalid customer or product selection')
       }
 
-      // Map plant selection to work center ID (hardcoded for demo)
-      const workCenterMap: Record<string, number> = {
-        'intramuros': 1,
-        'makati': 2,
-        'laguna': 3,
-        'cebu': 4,
+      const selectedWorkCenter = workCenters.find(wc => wc.id.toString() === formData.plant)
+      
+      if (!selectedWorkCenter) {
+        throw new Error('Invalid work center selection')
       }
 
       const orderData = {
         customer_id: selectedCustomer.id,
         delivery_date: formData.deliveryDate || undefined,
         priority: formData.priority.toUpperCase(),
-        work_center_id: workCenterMap[formData.plant],
+        work_center_id: selectedWorkCenter.id,
         items: [
           {
             product_id: selectedProduct.id,
@@ -242,16 +263,26 @@ export function CreateSalesOrderDialog({ open, onOpenChange, onOrderCreated }: C
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="plant">Bookstore Location *</Label>
-            <Select value={formData.plant} onValueChange={(value) => setFormData({ ...formData, plant: value })}>
+            <Label htmlFor="plant">Work Center *</Label>
+            <Select 
+              value={formData.plant} 
+              onValueChange={(value) => setFormData({ ...formData, plant: value })}
+              disabled={loading}
+            >
               <SelectTrigger id="plant">
-                <SelectValue placeholder="Select bookstore" />
+                <SelectValue placeholder={loading ? "Loading work centers..." : "Select work center"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="intramuros">Intramuros Bookstore</SelectItem>
-                <SelectItem value="makati">Makati Bookstore</SelectItem>
-                <SelectItem value="laguna">Laguna Bookstore</SelectItem>
-                <SelectItem value="cebu">Cebu Bookstore</SelectItem>
+                {workCenters.map((workCenter) => (
+                  <SelectItem key={workCenter.id} value={workCenter.id.toString()}>
+                    {workCenter.name}
+                  </SelectItem>
+                ))}
+                {workCenters.length === 0 && !loading && (
+                  <SelectItem value="" disabled>
+                    No work centers available
+                  </SelectItem>
+                )}
               </SelectContent>
             </Select>
           </div>

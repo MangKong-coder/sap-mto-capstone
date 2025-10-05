@@ -36,3 +36,14 @@ export {
   type Product,
   type ProductCreate,
 } from './products'
+
+// Work Centers DAL
+export {
+  getWorkCenters,
+  getWorkCenterById,
+  createWorkCenter,
+  updateWorkCenter,
+  deleteWorkCenter,
+  type WorkCenter,
+  type WorkCenterCreate,
+} from './work-centers'
