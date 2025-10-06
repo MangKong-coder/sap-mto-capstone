@@ -18,9 +18,9 @@ export function AdminSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="flex w-64 flex-col border-r border-zinc-800 bg-zinc-900">
-      <div className="flex h-14 items-center border-b border-zinc-800 px-6">
-        <span className="text-lg font-bold text-white">Admin</span>
+    <aside className="flex w-64 flex-col border-r border-zinc-200 bg-white">
+      <div className="flex h-14 items-center border-b border-zinc-200 px-6">
+        <span className="text-lg font-bold text-zinc-900">Admin</span>
       </div>
       <nav className="flex-1 space-y-1 p-4">
         {navigation.map((item) => {
@@ -31,7 +31,7 @@ export function AdminSidebar() {
               href={item.href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                isActive ? "bg-red-500/10 text-red-500" : "text-zinc-400 hover:bg-zinc-800 hover:text-white",
+                isActive ? "bg-red-50 text-red-600" : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900",
               )}
             >
               <item.icon className="h-5 w-5" />

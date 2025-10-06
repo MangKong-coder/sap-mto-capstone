@@ -23,22 +23,22 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Product Management</h2>
-          <p className="text-sm text-zinc-400">Manage product catalog and inventory</p>
+          <h2 className="text-2xl font-bold text-zinc-900">Product Management</h2>
+          <p className="text-sm text-zinc-600">Manage product catalog and inventory</p>
         </div>
       </div>
 
-      <Card className="border-zinc-800 bg-zinc-900">
+      <Card className="border-zinc-200 bg-white">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-white">All Products</CardTitle>
+            <CardTitle className="text-zinc-900">All Products</CardTitle>
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               <Input
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="border-zinc-700 bg-zinc-800 pl-9 text-white placeholder:text-zinc-500"
+                className="border-zinc-300 bg-white pl-9 text-zinc-900 placeholder:text-zinc-400"
               />
             </div>
           </div>
@@ -47,22 +47,22 @@ export default function ProductsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Product</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Description</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Price</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Stock</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Status</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Actions</th>
+                <tr className="border-b border-zinc-200">
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Product</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Description</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Price</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Stock</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="border-b border-zinc-800/50">
+                  <tr key={product.id} className="border-b border-zinc-100">
                     <td className="py-4">
                       <div className="flex items-center gap-3">
                         {product.image_url && (
-                          <div className="relative h-10 w-10 overflow-hidden rounded-md bg-zinc-800">
+                          <div className="relative h-10 w-10 overflow-hidden rounded-md bg-zinc-100">
                             <Image
                               src={product.image_url || "/placeholder.svg"}
                               alt={product.name}
@@ -71,12 +71,12 @@ export default function ProductsPage() {
                             />
                           </div>
                         )}
-                        <span className="text-sm font-medium text-white">{product.name}</span>
+                        <span className="text-sm font-medium text-zinc-900">{product.name}</span>
                       </div>
                     </td>
-                    <td className="py-4 text-sm text-zinc-400">{product.description}</td>
-                    <td className="py-4 text-right text-sm font-medium text-white">₱{product.price.toFixed(2)}</td>
-                    <td className="py-4 text-right text-sm text-zinc-300">{product.stock_qty}</td>
+                    <td className="py-4 text-sm text-zinc-600">{product.description}</td>
+                    <td className="py-4 text-right text-sm font-medium text-zinc-900">₱{product.price.toFixed(2)}</td>
+                    <td className="py-4 text-right text-sm text-zinc-700">{product.stock_qty}</td>
                     <td className="py-4">
                       <Badge
                         variant="secondary"
@@ -96,7 +96,7 @@ export default function ProductsPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 bg-transparent"
+                          className="border-zinc-300 text-zinc-700 hover:bg-zinc-100 bg-transparent"
                         >
                           <Edit className="h-3 w-3" />
                         </Button>
@@ -104,7 +104,7 @@ export default function ProductsPage() {
                           size="sm"
                           variant="outline"
                           onClick={() => deleteProduct(product.id)}
-                          className="border-zinc-700 text-red-400 hover:bg-zinc-800"
+                          className="border-zinc-300 text-red-500 hover:bg-zinc-100"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>

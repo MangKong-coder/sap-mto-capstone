@@ -53,22 +53,22 @@ export default function SalesOrdersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Sales Orders</h2>
-          <p className="text-sm text-zinc-400">Manage customer orders and production workflow</p>
+          <h2 className="text-2xl font-bold text-zinc-900">Sales Orders</h2>
+          <p className="text-sm text-zinc-600">Manage customer orders and production workflow</p>
         </div>
       </div>
 
-      <Card className="border-zinc-800 bg-zinc-900">
+      <Card className="border-zinc-200 bg-white">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-white">All Orders</CardTitle>
+            <CardTitle className="text-zinc-900">All Orders</CardTitle>
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               <Input
                 placeholder="Search orders..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="border-zinc-700 bg-zinc-800 pl-9 text-white placeholder:text-zinc-500"
+                className="border-zinc-300 bg-white pl-9 text-zinc-900 placeholder:text-zinc-400"
               />
             </div>
           </div>
@@ -77,26 +77,26 @@ export default function SalesOrdersPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Order ID</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Customer</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Date</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Total</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Status</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Actions</th>
+                <tr className="border-b border-zinc-200">
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Order ID</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Customer</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Date</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Total</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOrders.map((order) => (
-                  <tr key={order.id} className="border-b border-zinc-800/50">
+                  <tr key={order.id} className="border-b border-zinc-100">
                     <td className="py-4">
                       <Link href={`/orders/${order.id}`} className="text-sm font-medium text-red-500 hover:underline">
                         #{order.id}
                       </Link>
                     </td>
-                    <td className="py-4 text-sm text-zinc-300">{getCustomerName(order.customer_id)}</td>
-                    <td className="py-4 text-sm text-zinc-400">{new Date(order.created_at).toLocaleDateString()}</td>
-                    <td className="py-4 text-right text-sm font-medium text-white">₱{order.total_amount.toFixed(2)}</td>
+                    <td className="py-4 text-sm text-zinc-700">{getCustomerName(order.customer_id)}</td>
+                    <td className="py-4 text-sm text-zinc-600">{new Date(order.created_at).toLocaleDateString()}</td>
+                    <td className="py-4 text-right text-sm font-medium text-zinc-900">₱{order.total_amount.toFixed(2)}</td>
                     <td className="py-4">
                       <Badge variant="secondary" className={getStatusColor(order.status)}>
                         {order.status.replace(/_/g, " ")}
@@ -119,7 +119,7 @@ export default function SalesOrdersPage() {
                             size="sm"
                             variant="outline"
                             onClick={() => updateOrderStatus(order.id, SalesOrderStatus.READY_FOR_DELIVERY)}
-                            className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                            className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
                           >
                             <CheckCircle className="mr-1 h-3 w-3" />
                             Mark Ready

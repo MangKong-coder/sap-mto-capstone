@@ -22,7 +22,7 @@ export default function OrderConfirmationPage({ params }: PageProps) {
 
   if (!order) {
     return (
-      <main className="container py-16">
+      <main className="px-12 py-16">
         <div className="mx-auto max-w-md text-center">
           <h1 className="font-bold text-2xl">Order not found</h1>
           <p className="mt-2 text-muted-foreground">The order you're looking for doesn't exist.</p>
@@ -58,11 +58,11 @@ export default function OrderConfirmationPage({ params }: PageProps) {
   }
 
   return (
-    <main className="container py-8">
+    <main className="px-12 py-8">
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 flex flex-col items-center gap-4 text-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-            <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle2 className="h-8 w-8 text-green-600" />
           </div>
           <div>
             <h1 className="font-bold text-3xl">Order Confirmed!</h1>

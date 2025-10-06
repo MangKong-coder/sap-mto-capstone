@@ -29,50 +29,50 @@ export default function ProductionOrdersPage() {
         return "bg-red-500/10 text-red-500"
       default:
         return "bg-zinc-500/10 text-zinc-500"
-    }
+  }
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Production Orders</h2>
-        <p className="text-sm text-zinc-400">Track and manage production workflow</p>
+        <h2 className="text-2xl font-bold text-zinc-900">Production Orders</h2>
+        <p className="text-sm text-zinc-600">Track and manage production workflow</p>
       </div>
 
-      <Card className="border-zinc-800 bg-zinc-900">
+      <Card className="border-zinc-200 bg-white">
         <CardHeader>
-          <CardTitle className="text-white">All Production Orders</CardTitle>
+          <CardTitle className="text-zinc-900">All Production Orders</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Production ID</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Sales Order</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Items</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Start Date</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">End Date</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Status</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Actions</th>
+                <tr className="border-b border-zinc-200">
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Production ID</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Sales Order</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Items</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Start Date</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">End Date</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {productionOrders.map((po) => {
                   const order = getOrderDetails(po.sales_order_id)
                   return (
-                    <tr key={po.id} className="border-b border-zinc-800/50">
-                      <td className="py-4 text-sm font-medium text-white">PO-{po.id}</td>
+                    <tr key={po.id} className="border-b border-zinc-100">
+                      <td className="py-4 text-sm font-medium text-zinc-900">PO-{po.id}</td>
                       <td className="py-4">
                         <Link href={`/orders/${po.sales_order_id}`} className="text-sm text-red-500 hover:underline">
                           #{po.sales_order_id}
                         </Link>
                       </td>
-                      <td className="py-4 text-sm text-zinc-300">{order?.items.length || 0} items</td>
-                      <td className="py-4 text-sm text-zinc-400">
+                      <td className="py-4 text-sm text-zinc-700">{order?.items.length || 0} items</td>
+                      <td className="py-4 text-sm text-zinc-600">
                         {po.start_date ? new Date(po.start_date).toLocaleDateString() : "-"}
                       </td>
-                      <td className="py-4 text-sm text-zinc-400">
+                      <td className="py-4 text-sm text-zinc-600">
                         {po.end_date ? new Date(po.end_date).toLocaleDateString() : "-"}
                       </td>
                       <td className="py-4">
@@ -102,13 +102,12 @@ export default function ProductionOrdersPage() {
                               Complete
                             </Button>
                           )}
-                          {(po.status === ProductionOrderStatus.PLANNED ||
-                            po.status === ProductionOrderStatus.IN_PROGRESS) && (
+                          {(po.status === ProductionOrderStatus.PLANNED || po.status === ProductionOrderStatus.IN_PROGRESS) && (
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => updateProductionStatus(po.id, ProductionOrderStatus.CANCELLED)}
-                              className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                              className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
                             >
                               <XCircle className="mr-1 h-3 w-3" />
                               Cancel

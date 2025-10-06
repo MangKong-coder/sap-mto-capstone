@@ -4,19 +4,19 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-background">
       <AdminSidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 items-center justify-between border-b border-zinc-800 bg-zinc-900 px-6">
+        <header className="flex h-14 items-center justify-between border-b border-zinc-200 bg-white px-6 shadow-sm">
           <div className="flex items-center gap-3">
-            <Building2 className="h-5 w-5 text-red-500" />
-            <h1 className="font-semibold text-white">Mapúa Bookstore Operations</h1>
+            <Building2 className="h-5 w-5 text-red-600" />
+            <h1 className="font-semibold text-zinc-900">Mapúa Bookstore Operations</h1>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-zinc-400">Admin Portal</span>
+            <span className="text-sm text-zinc-600">Admin Portal</span>
           </div>
         </header>
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto bg-muted/30 p-6">{children}</main>
       </div>
     </div>
   )

@@ -26,7 +26,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
 
   if (!order) {
     return (
-      <main className="container py-16">
+      <main className="px-12 py-16">
         <div className="mx-auto max-w-md text-center">
           <h1 className="font-bold text-2xl">Order not found</h1>
           <p className="mt-2 text-muted-foreground">The order you're looking for doesn't exist.</p>
@@ -90,7 +90,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
   }
 
   return (
-    <main className="container py-8">
+    <main className="px-12 py-8">
       <div className="mb-6">
         <Button variant="ghost" asChild className="mb-4">
           <Link href="/orders">
@@ -308,7 +308,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex gap-3">
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
                     <div className="h-2 w-2 rounded-full bg-green-600" />
                   </div>
                   <div className="flex-1">
@@ -326,7 +326,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
 
                 {productionOrder && productionOrder.start_date && (
                   <div className="flex gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/20">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-orange-100">
                       <div className="h-2 w-2 rounded-full bg-orange-600" />
                     </div>
                     <div className="flex-1">
@@ -343,7 +343,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
 
                 {productionOrder && productionOrder.end_date && (
                   <div className="flex gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
                       <div className="h-2 w-2 rounded-full bg-blue-600" />
                     </div>
                     <div className="flex-1">
@@ -360,7 +360,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
 
                 {delivery && delivery.delivery_date && (
                   <div className="flex gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
                       <div className="h-2 w-2 rounded-full bg-green-600" />
                     </div>
                     <div className="flex-1">

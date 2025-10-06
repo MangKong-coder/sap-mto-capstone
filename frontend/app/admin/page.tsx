@@ -45,52 +45,52 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Dashboard Overview</h2>
-        <p className="text-sm text-zinc-400">Operational KPIs and summaries</p>
+        <h2 className="text-2xl font-bold text-zinc-900">Dashboard Overview</h2>
+        <p className="text-sm text-zinc-600">Operational KPIs and summaries</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-zinc-800 bg-zinc-900">
+        <Card className="border-zinc-200 bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-400">Total Sales Orders</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-zinc-400" />
+            <CardTitle className="text-sm font-medium text-zinc-600">Total Sales Orders</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-zinc-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{totalOrders}</div>
+            <div className="text-2xl font-bold text-zinc-900">{totalOrders}</div>
             <p className="text-xs text-zinc-500">All time orders</p>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-900">
+        <Card className="border-zinc-200 bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-400">In Production</CardTitle>
-            <Factory className="h-4 w-4 text-zinc-400" />
+            <CardTitle className="text-sm font-medium text-zinc-600">In Production</CardTitle>
+            <Factory className="h-4 w-4 text-zinc-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{ordersInProduction}</div>
+            <div className="text-2xl font-bold text-zinc-900">{ordersInProduction}</div>
             <p className="text-xs text-zinc-500">Currently being produced</p>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-900">
+        <Card className="border-zinc-200 bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-400">Delivered</CardTitle>
-            <Truck className="h-4 w-4 text-zinc-400" />
+            <CardTitle className="text-sm font-medium text-zinc-600">Delivered</CardTitle>
+            <Truck className="h-4 w-4 text-zinc-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{ordersDelivered}</div>
+            <div className="text-2xl font-bold text-zinc-900">{ordersDelivered}</div>
             <p className="text-xs text-zinc-500">Successfully delivered</p>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-900">
+        <Card className="border-zinc-200 bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-400">Billed</CardTitle>
-            <FileText className="h-4 w-4 text-zinc-400" />
+            <CardTitle className="text-sm font-medium text-zinc-600">Billed</CardTitle>
+            <FileText className="h-4 w-4 text-zinc-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{ordersBilled}</div>
+            <div className="text-2xl font-bold text-zinc-900">{ordersBilled}</div>
             <p className="text-xs text-zinc-500">Invoices generated</p>
           </CardContent>
         </Card>
@@ -98,19 +98,19 @@ export default function AdminDashboard() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Orders by Status */}
-        <Card className="border-zinc-800 bg-zinc-900">
+        <Card className="border-zinc-200 bg-white">
           <CardHeader>
-            <CardTitle className="text-white">Orders by Status</CardTitle>
+            <CardTitle className="text-zinc-900">Orders by Status</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {Object.entries(ordersByStatus).map(([status, count]) => (
               <div key={status} className="flex items-center justify-between">
-                <span className="text-sm text-zinc-400 capitalize">{status.replace(/_/g, " ")}</span>
+                <span className="text-sm text-zinc-600 capitalize">{status.replace(/_/g, " ")}</span>
                 <div className="flex items-center gap-2">
-                  <div className="h-2 w-32 overflow-hidden rounded-full bg-zinc-800">
+                  <div className="h-2 w-32 overflow-hidden rounded-full bg-zinc-200">
                     <div className="h-full bg-red-500" style={{ width: `${(count / totalOrders) * 100}%` }} />
                   </div>
-                  <span className="w-8 text-right text-sm font-medium text-white">{count}</span>
+                  <span className="w-8 text-right text-sm font-medium text-zinc-900">{count}</span>
                 </div>
               </div>
             ))}
@@ -118,21 +118,21 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Top Products */}
-        <Card className="border-zinc-800 bg-zinc-900">
+        <Card className="border-zinc-200 bg-white">
           <CardHeader>
-            <CardTitle className="text-white">Top 5 Products</CardTitle>
+            <CardTitle className="text-zinc-900">Top 5 Products</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {topProducts.map((product, index) => (
                 <div key={product.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-zinc-400">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-100 text-sm font-medium text-zinc-600">
                       {index + 1}
                     </div>
-                    <span className="text-sm text-zinc-300">Product #{product.id}</span>
+                    <span className="text-sm text-zinc-700">Product #{product.id}</span>
                   </div>
-                  <Badge variant="secondary" className="bg-zinc-800 text-white">
+                  <Badge variant="secondary" className="bg-zinc-100 text-zinc-700">
                     {product.count} units
                   </Badge>
                 </div>
@@ -143,38 +143,38 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Orders Table */}
-      <Card className="border-zinc-800 bg-zinc-900">
+      <Card className="border-zinc-200 bg-white">
         <CardHeader>
-          <CardTitle className="text-white">Recent Orders</CardTitle>
+          <CardTitle className="text-zinc-900">Recent Orders</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Order ID</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Customer</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Date</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-400">Total</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-400">Status</th>
+                <tr className="border-b border-zinc-200">
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Order ID</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Customer</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Date</th>
+                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Total</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {recentOrders.map((order) => (
-                  <tr key={order.id} className="border-b border-zinc-800/50">
-                    <td className="py-3 text-sm text-white">#{order.id}</td>
-                    <td className="py-3 text-sm text-zinc-300">Customer {order.customer_id}</td>
-                    <td className="py-3 text-sm text-zinc-400">{new Date(order.created_at).toLocaleDateString()}</td>
-                    <td className="py-3 text-right text-sm text-white">₱{order.total_amount.toFixed(2)}</td>
+                  <tr key={order.id} className="border-b border-zinc-100">
+                    <td className="py-3 text-sm text-zinc-900">#{order.id}</td>
+                    <td className="py-3 text-sm text-zinc-700">Customer {order.customer_id}</td>
+                    <td className="py-3 text-sm text-zinc-600">{new Date(order.created_at).toLocaleDateString()}</td>
+                    <td className="py-3 text-right text-sm text-zinc-900">₱{order.total_amount.toFixed(2)}</td>
                     <td className="py-3">
                       <Badge
                         variant="secondary"
                         className={
                           order.status === SalesOrderStatus.BILLED
-                            ? "bg-green-500/10 text-green-500"
+                            ? "bg-green-100 text-green-700"
                             : order.status === SalesOrderStatus.DELIVERED
-                              ? "bg-blue-500/10 text-blue-500"
-                              : "bg-yellow-500/10 text-yellow-500"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-yellow-100 text-yellow-700"
                         }
                       >
                         {order.status}

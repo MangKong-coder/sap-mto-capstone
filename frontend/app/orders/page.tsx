@@ -38,7 +38,7 @@ export default function OrdersPage() {
 
   if (orders.length === 0) {
     return (
-      <main className="container py-16">
+      <main className="px-12 py-16">
         <div className="mx-auto flex max-w-md flex-col items-center gap-4 text-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
             <Package className="h-10 w-10 text-muted-foreground" />
@@ -59,7 +59,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <main className="container py-8">
+    <main className="px-12 py-8">
       <div className="mb-6">
         <h1 className="font-bold text-3xl">My Orders</h1>
         <p className="text-muted-foreground">Track and manage your Mapúa merchandise orders</p>
