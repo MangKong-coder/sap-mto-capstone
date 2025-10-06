@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import secrets
 from datetime import UTC, datetime
+from typing import Sequence
 
 from sqlmodel import Session
 
@@ -17,6 +18,18 @@ logger = logging.getLogger(__name__)
 
 billing_repo = BillingRepository()
 sales_order_repo = SalesOrderRepository()
+
+
+def list_billings(session: Session) -> Sequence[Billing]:
+    """Return all billing records."""
+
+    return billing_repo.list(session)
+
+
+def get_billing(session: Session, billing_id: int) -> Billing:
+    """Return a billing record by its identifier or raise if missing."""
+
+    return billing_repo.get_or_raise(session, billing_id)
 
 
 def _generate_invoice_number(timestamp: datetime) -> str:

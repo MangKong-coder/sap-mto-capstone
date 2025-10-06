@@ -18,6 +18,23 @@ delivery_repo = DeliveryRepository()
 sales_order_repo = SalesOrderRepository()
 
 
+def list_deliveries(
+    session: Session,
+    *,
+    status: DeliveryStatus | str | None = None,
+) -> list[Delivery]:
+    """Return deliveries optionally filtered by status."""
+
+    filters = None
+    if status is not None:
+        desired_status = (
+            status if isinstance(status, DeliveryStatus) else DeliveryStatus(status)
+        )
+        filters = [Delivery.status == desired_status]
+
+    return delivery_repo.list(session, filters=filters)
+
+
 def create_delivery_for_order(
     session: Session,
     sales_order_id: int,

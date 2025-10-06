@@ -23,6 +23,25 @@ production_repo = ProductionOrderRepository()
 sales_order_repo = SalesOrderRepository()
 
 
+def list_production_orders(
+    session: Session,
+    *,
+    status: ProductionOrderStatus | str | None = None,
+) -> list[ProductionOrder]:
+    """Return production orders optionally filtered by status."""
+
+    filters = None
+    if status is not None:
+        desired_status = (
+            status
+            if isinstance(status, ProductionOrderStatus)
+            else ProductionOrderStatus(status)
+        )
+        filters = [ProductionOrder.status == desired_status]
+
+    return production_repo.list(session, filters=filters)
+
+
 def start_production_for_order(session: Session, sales_order_id: int) -> ProductionOrder:
     """Create a production order for the sales order and move it to in_production."""
 

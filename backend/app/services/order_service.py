@@ -10,6 +10,7 @@ from sqlmodel import Session
 
 from app.models import SalesOrder, SalesOrderStatus
 from app.repositories.billing_repository import BillingRepository
+from app.repositories.customer_repository import CustomerRepository
 from app.repositories.delivery_repository import DeliveryRepository
 from app.repositories.product_repository import ProductRepository
 from app.repositories.production_order_repository import ProductionOrderRepository
@@ -33,6 +34,7 @@ sales_order_item_repo = SalesOrderItemRepository()
 production_repo = ProductionOrderRepository()
 delivery_repo = DeliveryRepository()
 billing_repo = BillingRepository()
+customer_repo = CustomerRepository()
 
 
 _ALLOWED_TRANSITIONS: dict[SalesOrderStatus, set[SalesOrderStatus]] = {
@@ -52,6 +54,39 @@ _ALLOWED_TRANSITIONS: dict[SalesOrderStatus, set[SalesOrderStatus]] = {
     SalesOrderStatus.cancelled: set(),
     SalesOrderStatus.billed: set(),
 }
+
+
+def get_customer_orders(
+    session: Session,
+    *,
+    status: SalesOrderStatus | str | None = None,
+) -> list[dict[str, Any]]:
+    """Return serialized sales order summaries optionally filtered by status."""
+
+    filters: list[Any] = []
+    if status is not None:
+        desired_status = (
+            status if isinstance(status, SalesOrderStatus) else SalesOrderStatus(status)
+        )
+        filters.append(SalesOrder.status == desired_status)
+
+    orders = sales_order_repo.list(session, filters=filters or None)
+
+    summaries: list[dict[str, Any]] = []
+    for order in orders:
+        customer = order.customer or customer_repo.get(session, order.customer_id)
+        summaries.append(
+            {
+                "id": order.id,
+                "customer_id": order.customer_id,
+                "customer_name": getattr(customer, "name", None),
+                "status": order.status,
+                "total_amount": order.total_amount,
+                "created_at": order.created_at,
+            }
+        )
+
+    return summaries
 
 
 def create_order_with_items(
@@ -111,20 +146,69 @@ def create_order_with_items(
 
 
 def get_order_details(session: Session, order_id: int) -> dict[str, Any]:
-    """Return a composed view of the sales order and related records."""
+    """Return a composed, serialisable view of the sales order and related records."""
 
     order = sales_order_repo.get_or_raise(session, order_id)
+    customer = order.customer or customer_repo.get(session, order.customer_id)
+
     items = sales_order_item_repo.list_by_order(session, order_id)
+    item_payloads: list[dict[str, Any]] = []
+    for item in items:
+        product = product_repo.get(session, item.product_id)
+        item_payloads.append(
+            {
+                "id": item.id,
+                "product_id": item.product_id,
+                "product_name": getattr(product, "name", None),
+                "quantity": item.quantity,
+                "subtotal": item.subtotal,
+            }
+        )
+
     production_orders = production_repo.list_by_sales_order(session, order_id)
+    production_payloads = [
+        {
+            "id": production.id,
+            "status": production.status,
+            "start_date": production.start_date,
+            "end_date": production.end_date,
+        }
+        for production in production_orders
+    ]
+
     deliveries = delivery_repo.list_by_sales_order(session, order_id)
+    delivery_payloads = [
+        {
+            "id": delivery.id,
+            "status": delivery.status,
+            "delivery_date": delivery.delivery_date,
+        }
+        for delivery in deliveries
+    ]
+
     billing = billing_repo.get_by_sales_order(session, order_id)
+    billing_payload = (
+        {
+            "id": billing.id,
+            "invoice_number": billing.invoice_number,
+            "amount": billing.amount,
+            "billed_date": billing.billed_date,
+        }
+        if billing
+        else None
+    )
 
     return {
-        "order": order,
-        "items": items,
-        "production_orders": production_orders,
-        "deliveries": deliveries,
-        "billing": billing,
+        "id": order.id,
+        "customer_id": order.customer_id,
+        "customer_name": getattr(customer, "name", None),
+        "status": order.status,
+        "total_amount": order.total_amount,
+        "created_at": order.created_at,
+        "items": item_payloads,
+        "production_orders": production_payloads,
+        "deliveries": delivery_payloads,
+        "billing": billing_payload,
     }
 
 

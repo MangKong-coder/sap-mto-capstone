@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
+from sqlalchemy import func
 from sqlmodel import Session
 
 from app.models import Product
@@ -13,6 +14,21 @@ from app.repositories.product_repository import ProductRepository
 logger = logging.getLogger(__name__)
 
 product_repo = ProductRepository()
+
+
+def get_product_catalog(
+    session: Session,
+    *,
+    search: str | None = None,
+) -> Sequence[Product]:
+    """Return all products optionally filtered by a case-insensitive search term."""
+
+    filters = None
+    if search:
+        pattern = f"%{search.lower()}%"
+        filters = [func.lower(Product.name).like(pattern)]
+
+    return product_repo.list(session, filters=filters)
 
 
 def create_product_with_stock(

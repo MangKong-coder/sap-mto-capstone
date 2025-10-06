@@ -7,4 +7,6 @@ __all__ = [
     "delivery_service",
     "billing_service",
     "product_service",
+    "customer_service",
+    "dashboard_service",
 ]
