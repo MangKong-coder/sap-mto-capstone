@@ -91,7 +91,7 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     const newBilling: Billing = {
       id: ordersStore.billings.length + 1,
       sales_order_id: orderId,
-      invoice_number: `INV-${orderId}-${Date.now()}`,
+      invoice_number: `INV-${orderId}-kachow`,
       amount: order.total_amount,
       billed_date: new Date().toISOString(),
     }

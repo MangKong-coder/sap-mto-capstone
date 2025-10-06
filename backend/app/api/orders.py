@@ -21,12 +21,13 @@ router = APIRouter(prefix="/api/orders", tags=["Orders"])
 @router.get("/", response_model=SuccessResponse[list[OrderSummaryResponse]])
 def list_orders(
     status: str | None = Query(default=None, description="Filter by order status"),
+    customer_id: int | None = Query(default=None, description="Filter by customer ID"),
     session: Session = Depends(get_session),
 ) -> SuccessResponse[list[OrderSummaryResponse]]:
-    """Retrieve all sales orders, optionally filtered by status."""
+    """Retrieve all sales orders, optionally filtered by status and/or customer ID."""
 
     try:
-        orders = order_service.get_customer_orders(session, status=status)
+        orders = order_service.get_customer_orders(session, status=status, customer_id=customer_id)
         return SuccessResponse(data=orders)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

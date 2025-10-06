@@ -1,17 +1,9 @@
-import { ProductGrid } from "@/components/product-grid"
-import { mockProducts } from "@/lib/mock-data"
+import { HomePageClient } from "@/components/home-page-client"
+import { getProducts } from "@/lib/dal"
 
-export default function HomePage() {
-  return (
-    <main className="px-12 py-8">
-      <div className="mb-8 space-y-2">
-        <h1 className="font-bold text-4xl text-balance">Official Mapúa Merchandise</h1>
-        <p className="text-muted-foreground text-lg text-pretty">
-          Browse our collection of authentic Cardinals apparel and accessories
-        </p>
-      </div>
+export default async function HomePage() {
+  // Fetch products on the server side
+  const products = await getProducts()
 
-      <ProductGrid products={mockProducts} />
-    </main>
-  )
+  return <HomePageClient products={products} />
 }

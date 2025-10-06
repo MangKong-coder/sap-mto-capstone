@@ -1,17 +1,18 @@
-"use client"
-
 import Link from "next/link"
 import { Package, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useOrdersStore } from "@/lib/orders-store"
-import { mockCustomer, mockProducts } from "@/lib/mock-data"
+import { getOrders } from "@/lib/dal/orders"
 import { SalesOrderStatus } from "@/lib/types"
 
-export default function OrdersPage() {
-  const allOrders = useOrdersStore((state) => state.orders)
-  const orders = allOrders.filter((order) => order.customer_id === mockCustomer.id)
+// For now, we'll use a placeholder customer ID until auth is implemented
+// In a real app, this would come from authentication context or session
+const PLACEHOLDER_CUSTOMER_ID = 1
+
+export default async function OrdersPage() {
+  // Fetch orders for the current customer from the backend
+  const orders = await getOrders({}, { customer_id: PLACEHOLDER_CUSTOMER_ID })
 
   const getStatusColor = (status: SalesOrderStatus) => {
     switch (status) {
@@ -67,7 +68,7 @@ export default function OrdersPage() {
 
       <div className="space-y-4">
         {orders
-          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
           .map((order) => (
             <Card key={order.id} className="transition-shadow hover:shadow-md">
               <CardContent className="p-6">
@@ -79,26 +80,20 @@ export default function OrdersPage() {
                     </div>
                     <p className="mt-1 text-muted-foreground text-sm">
                       Placed on{" "}
-                      {new Date(order.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      {order.created_at
+                        ? new Date(order.created_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "Date not available"
+                      }
                     </p>
                     <div className="mt-3 space-y-1">
-                      {order.items.slice(0, 2).map((item) => {
-                        const product = mockProducts.find((p) => p.id === item.product_id)
-                        if (!product) return null
-
-                        return (
-                          <p key={item.id} className="text-sm">
-                            {product.name} × {item.quantity}
-                          </p>
-                        )
-                      })}
-                      {order.items.length > 2 && (
-                        <p className="text-muted-foreground text-sm">+{order.items.length - 2} more items</p>
-                      )}
+                      {/* For now, show placeholder item info since we don't have item details in OrderSummary */}
+                      <p className="text-sm text-muted-foreground">
+                        Order details available in full view
+                      </p>
                     </div>
                   </div>
 

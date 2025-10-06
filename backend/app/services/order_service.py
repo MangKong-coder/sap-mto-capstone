@@ -60,8 +60,9 @@ def get_customer_orders(
     session: Session,
     *,
     status: SalesOrderStatus | str | None = None,
+    customer_id: int | None = None,
 ) -> list[dict[str, Any]]:
-    """Return serialized sales order summaries optionally filtered by status."""
+    """Return serialized sales order summaries optionally filtered by status and/or customer ID."""
 
     filters: list[Any] = []
     if status is not None:
@@ -69,6 +70,9 @@ def get_customer_orders(
             status if isinstance(status, SalesOrderStatus) else SalesOrderStatus(status)
         )
         filters.append(SalesOrder.status == desired_status)
+
+    if customer_id is not None:
+        filters.append(SalesOrder.customer_id == customer_id)
 
     orders = sales_order_repo.list(session, filters=filters or None)
 

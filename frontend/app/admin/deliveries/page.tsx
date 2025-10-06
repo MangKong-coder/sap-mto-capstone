@@ -1,7 +1,5 @@
-"use client"
-
-import { useOrdersStore } from "@/lib/orders-store"
-import { useAdminStore } from "@/lib/admin-store"
+import { getOrders, getDeliveries, type OrderSummary, type Delivery } from "@/lib/dal"
+import { updateDeliveryStatusAction } from "@/app/admin/actions"
 import { DeliveryStatus, SalesOrderStatus } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,15 +7,25 @@ import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
 
-export default function DeliveriesPage() {
-  const { orders, deliveries } = useOrdersStore()
-  const { updateDeliveryStatus } = useAdminStore()
+export default async function DeliveriesPage() {
+  let orders: OrderSummary[] = []
+  let deliveries: Delivery[] = []
+  let error: string | null = null
 
-  const getOrderDetails = (salesOrderId: number) => {
+  try {
+    [orders, deliveries] = await Promise.all([
+      getOrders(),
+      getDeliveries()
+    ])
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Failed to load deliveries data"
+  }
+
+  const getOrderDetails = (salesOrderId: number): OrderSummary | undefined => {
     return orders.find((o) => o.id === salesOrderId)
   }
 
-  const getStatusColor = (status: DeliveryStatus) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case DeliveryStatus.PENDING:
         return "bg-yellow-500/10 text-yellow-500"
@@ -35,6 +43,7 @@ export default function DeliveriesPage() {
       <div>
         <h2 className="text-2xl font-bold text-zinc-900">Deliveries</h2>
         <p className="text-sm text-zinc-600">Track and manage order deliveries</p>
+        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
 
       <Card className="border-zinc-200 bg-white">
@@ -56,71 +65,83 @@ export default function DeliveriesPage() {
                 </tr>
               </thead>
               <tbody>
-                {deliveries.map((delivery) => {
-                  const order = getOrderDetails(delivery.sales_order_id)
-                  return (
-                    <tr key={delivery.id} className="border-b border-zinc-100">
-                      <td className="py-4 text-sm font-medium text-zinc-900">DEL-{delivery.id}</td>
-                      <td className="py-4">
-                        <Link
-                          href={`/orders/${delivery.sales_order_id}`}
-                          className="text-sm text-red-500 hover:underline"
-                        >
-                          #{delivery.sales_order_id}
-                        </Link>
-                      </td>
-                      <td className="py-4">
-                        <Badge
-                          variant="secondary"
-                          className={
-                            order?.status === SalesOrderStatus.READY_FOR_DELIVERY
-                              ? "bg-purple-500/10 text-purple-500"
-                              : "bg-zinc-500/10 text-zinc-500"
-                          }
-                        >
-                          {order?.status.replace(/_/g, " ") || "Unknown"}
-                        </Badge>
-                      </td>
-                      <td className="py-4 text-right text-sm text-zinc-900">
-                        ₱{order?.total_amount.toFixed(2) || "0.00"}
-                      </td>
-                      <td className="py-4 text-sm text-zinc-600">
-                        {delivery.delivery_date ? new Date(delivery.delivery_date).toLocaleDateString() : "-"}
-                      </td>
-                      <td className="py-4">
-                        <Badge variant="secondary" className={getStatusColor(delivery.status)}>
-                          {delivery.status}
-                        </Badge>
-                      </td>
-                      <td className="py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          {delivery.status === DeliveryStatus.PENDING &&
-                            order?.status === SalesOrderStatus.READY_FOR_DELIVERY && (
-                              <Button
-                                size="sm"
-                                onClick={() => updateDeliveryStatus(delivery.id, DeliveryStatus.DELIVERED)}
-                                className="bg-green-500 text-white hover:bg-green-600"
-                              >
-                                <CheckCircle className="mr-1 h-3 w-3" />
-                                Mark Delivered
-                              </Button>
+                {deliveries.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-6 text-center text-sm text-zinc-500">
+                      No deliveries available.
+                    </td>
+                  </tr>
+                ) : (
+                  deliveries.map((delivery: Delivery) => {
+                    const order = getOrderDetails(delivery.sales_order_id)
+                    return (
+                      <tr key={delivery.id} className="border-b border-zinc-100">
+                        <td className="py-4 text-sm font-medium text-zinc-900">DEL-{delivery.id}</td>
+                        <td className="py-4">
+                          <Link
+                            href={`/orders/${delivery.sales_order_id}`}
+                            className="text-sm text-red-500 hover:underline"
+                          >
+                            #{delivery.sales_order_id}
+                          </Link>
+                        </td>
+                        <td className="py-4">
+                          <Badge
+                            variant="secondary"
+                            className={
+                              order?.status === SalesOrderStatus.READY_FOR_DELIVERY
+                                ? "bg-purple-500/10 text-purple-500"
+                                : "bg-zinc-500/10 text-zinc-500"
+                            }
+                          >
+                            {order?.status.replace(/_/g, " ") || "Unknown"}
+                          </Badge>
+                        </td>
+                        <td className="py-4 text-right text-sm text-zinc-900">
+                          ₱{order?.total_amount.toFixed(2) || "0.00"}
+                        </td>
+                        <td className="py-4 text-sm text-zinc-600">
+                          {delivery.delivery_date ? new Date(delivery.delivery_date).toLocaleDateString() : "-"}
+                        </td>
+                        <td className="py-4">
+                          <Badge variant="secondary" className={getStatusColor(delivery.status)}>
+                            {delivery.status}
+                          </Badge>
+                        </td>
+                        <td className="py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            {delivery.status === DeliveryStatus.PENDING &&
+                              order?.status === SalesOrderStatus.READY_FOR_DELIVERY && (
+                                <form action={updateDeliveryStatusAction.bind(null, delivery.id, DeliveryStatus.DELIVERED)}>
+                                  <Button
+                                    size="sm"
+                                    type="submit"
+                                    className="bg-green-500 text-white hover:bg-green-600"
+                                  >
+                                    <CheckCircle className="mr-1 h-3 w-3" />
+                                    Mark Delivered
+                                  </Button>
+                                </form>
+                              )}
+                            {delivery.status === DeliveryStatus.PENDING && (
+                              <form action={updateDeliveryStatusAction.bind(null, delivery.id, DeliveryStatus.CANCELLED)}>
+                                <Button
+                                  size="sm"
+                                  type="submit"
+                                  variant="outline"
+                                  className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
+                                >
+                                  <XCircle className="mr-1 h-3 w-3" />
+                                  Cancel
+                                </Button>
+                              </form>
                             )}
-                          {delivery.status === DeliveryStatus.PENDING && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateDeliveryStatus(delivery.id, DeliveryStatus.CANCELLED)}
-                              className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
-                            >
-                              <XCircle className="mr-1 h-3 w-3" />
-                              Cancel
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
               </tbody>
             </table>
           </div>

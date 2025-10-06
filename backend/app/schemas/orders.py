@@ -73,6 +73,7 @@ class OrderSummaryResponse(BaseModel):
     customer_name: Optional[str]
     status: SalesOrderStatus
     total_amount: float
+    created_at: datetime
 
 
 class OrderDetailResponse(BaseModel):

@@ -1,7 +1,5 @@
-"use client"
-
-import { useOrdersStore } from "@/lib/orders-store"
-import { useAdminStore } from "@/lib/admin-store"
+import { getOrders, getProductionOrders, type OrderSummary, type ProductionOrder } from "@/lib/dal"
+import { updateProductionStatusAction } from "@/app/admin/actions"
 import { ProductionOrderStatus } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,15 +7,25 @@ import { Badge } from "@/components/ui/badge"
 import { Play, CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
 
-export default function ProductionOrdersPage() {
-  const { orders, productionOrders } = useOrdersStore()
-  const { updateProductionStatus } = useAdminStore()
+export default async function ProductionOrdersPage() {
+  let orders: OrderSummary[] = []
+  let productionOrders: ProductionOrder[] = []
+  let error: string | null = null
 
-  const getOrderDetails = (salesOrderId: number) => {
+  try {
+    [orders, productionOrders] = await Promise.all([
+      getOrders(),
+      getProductionOrders()
+    ])
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Failed to load production data"
+  }
+
+  const getOrderDetails = (salesOrderId: number): OrderSummary | undefined => {
     return orders.find((o) => o.id === salesOrderId)
   }
 
-  const getStatusColor = (status: ProductionOrderStatus) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case ProductionOrderStatus.PLANNED:
         return "bg-yellow-500/10 text-yellow-500"
@@ -29,7 +37,7 @@ export default function ProductionOrdersPage() {
         return "bg-red-500/10 text-red-500"
       default:
         return "bg-zinc-500/10 text-zinc-500"
-  }
+    }
   }
 
   return (
@@ -37,6 +45,7 @@ export default function ProductionOrdersPage() {
       <div>
         <h2 className="text-2xl font-bold text-zinc-900">Production Orders</h2>
         <p className="text-sm text-zinc-600">Track and manage production workflow</p>
+        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
 
       <Card className="border-zinc-200 bg-white">
@@ -58,66 +67,80 @@ export default function ProductionOrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {productionOrders.map((po) => {
-                  const order = getOrderDetails(po.sales_order_id)
-                  return (
-                    <tr key={po.id} className="border-b border-zinc-100">
-                      <td className="py-4 text-sm font-medium text-zinc-900">PO-{po.id}</td>
-                      <td className="py-4">
-                        <Link href={`/orders/${po.sales_order_id}`} className="text-sm text-red-500 hover:underline">
-                          #{po.sales_order_id}
-                        </Link>
-                      </td>
-                      <td className="py-4 text-sm text-zinc-700">{order?.items.length || 0} items</td>
-                      <td className="py-4 text-sm text-zinc-600">
-                        {po.start_date ? new Date(po.start_date).toLocaleDateString() : "-"}
-                      </td>
-                      <td className="py-4 text-sm text-zinc-600">
-                        {po.end_date ? new Date(po.end_date).toLocaleDateString() : "-"}
-                      </td>
-                      <td className="py-4">
-                        <Badge variant="secondary" className={getStatusColor(po.status)}>
-                          {po.status.replace(/_/g, " ")}
-                        </Badge>
-                      </td>
-                      <td className="py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          {po.status === ProductionOrderStatus.PLANNED && (
-                            <Button
-                              size="sm"
-                              onClick={() => updateProductionStatus(po.id, ProductionOrderStatus.IN_PROGRESS)}
-                              className="bg-blue-500 text-white hover:bg-blue-600"
-                            >
-                              <Play className="mr-1 h-3 w-3" />
-                              Start
-                            </Button>
-                          )}
-                          {po.status === ProductionOrderStatus.IN_PROGRESS && (
-                            <Button
-                              size="sm"
-                              onClick={() => updateProductionStatus(po.id, ProductionOrderStatus.COMPLETED)}
-                              className="bg-green-500 text-white hover:bg-green-600"
-                            >
-                              <CheckCircle className="mr-1 h-3 w-3" />
-                              Complete
-                            </Button>
-                          )}
-                          {(po.status === ProductionOrderStatus.PLANNED || po.status === ProductionOrderStatus.IN_PROGRESS) && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateProductionStatus(po.id, ProductionOrderStatus.CANCELLED)}
-                              className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
-                            >
-                              <XCircle className="mr-1 h-3 w-3" />
-                              Cancel
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
+                {productionOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-6 text-center text-sm text-zinc-500">
+                      No production orders available.
+                    </td>
+                  </tr>
+                ) : (
+                  productionOrders.map((po: ProductionOrder) => {
+                    const order = getOrderDetails(po.sales_order_id)
+                    return (
+                      <tr key={po.id} className="border-b border-zinc-100">
+                        <td className="py-4 text-sm font-medium text-zinc-900">PO-{po.id}</td>
+                        <td className="py-4">
+                          <Link href={`/orders/${po.sales_order_id}`} className="text-sm text-red-500 hover:underline">
+                            #{po.sales_order_id}
+                          </Link>
+                        </td>
+                        <td className="py-4 text-sm text-zinc-700">-</td>
+                        <td className="py-4 text-sm text-zinc-600">
+                          {po.start_date ? new Date(po.start_date).toLocaleDateString() : "-"}
+                        </td>
+                        <td className="py-4 text-sm text-zinc-600">
+                          {po.end_date ? new Date(po.end_date).toLocaleDateString() : "-"}
+                        </td>
+                        <td className="py-4">
+                          <Badge variant="secondary" className={getStatusColor(po.status)}>
+                            {po.status.replace(/_/g, " ")}
+                          </Badge>
+                        </td>
+                        <td className="py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            {po.status === ProductionOrderStatus.PLANNED && (
+                              <form action={updateProductionStatusAction.bind(null, po.id, ProductionOrderStatus.IN_PROGRESS)}>
+                                <Button
+                                  size="sm"
+                                  type="submit"
+                                  className="bg-blue-500 text-white hover:bg-blue-600"
+                                >
+                                  <Play className="mr-1 h-3 w-3" />
+                                  Start
+                                </Button>
+                              </form>
+                            )}
+                            {po.status === ProductionOrderStatus.IN_PROGRESS && (
+                              <form action={updateProductionStatusAction.bind(null, po.id, ProductionOrderStatus.COMPLETED)}>
+                                <Button
+                                  size="sm"
+                                  type="submit"
+                                  className="bg-green-500 text-white hover:bg-green-600"
+                                >
+                                  <CheckCircle className="mr-1 h-3 w-3" />
+                                  Complete
+                                </Button>
+                              </form>
+                            )}
+                            {(po.status === ProductionOrderStatus.PLANNED || po.status === ProductionOrderStatus.IN_PROGRESS) && (
+                              <form action={updateProductionStatusAction.bind(null, po.id, ProductionOrderStatus.CANCELLED)}>
+                                <Button
+                                  size="sm"
+                                  type="submit"
+                                  variant="outline"
+                                  className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
+                                >
+                                  <XCircle className="mr-1 h-3 w-3" />
+                                  Cancel
+                                </Button>
+                              </form>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
               </tbody>
             </table>
           </div>

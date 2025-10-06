@@ -5,11 +5,15 @@ from app.database import init_db
 from . import models
 from app.api import orders, production_orders, deliveries, billings, products, customers, dashboard
 
+from dotenv import load_dotenv  
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handle application startup and shutdown events."""
     # Startup
+    load_dotenv()
+
     init_db()
     yield
     # Shutdown (if needed)

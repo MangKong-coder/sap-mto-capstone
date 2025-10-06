@@ -1,7 +1,5 @@
-"use client"
-
-import { useOrdersStore } from "@/lib/orders-store"
-import { useAdminStore } from "@/lib/admin-store"
+import { getOrders, getBillings, type OrderSummary, type Billing } from "@/lib/dal"
+import { createBillingAction } from "@/app/admin/actions"
 import { SalesOrderStatus } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,11 +7,21 @@ import { Badge } from "@/components/ui/badge"
 import { FileText } from "lucide-react"
 import Link from "next/link"
 
-export default function BillingsPage() {
-  const { orders, billings } = useOrdersStore()
-  const { createBilling } = useAdminStore()
+export default async function BillingsPage() {
+  let orders: OrderSummary[] = []
+  let billings: Billing[] = []
+  let error: string | null = null
 
-  const getOrderDetails = (salesOrderId: number) => {
+  try {
+    [orders, billings] = await Promise.all([
+      getOrders(),
+      getBillings()
+    ])
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Failed to load billing data"
+  }
+
+  const getOrderDetails = (salesOrderId: number): OrderSummary | undefined => {
     return orders.find((o) => o.id === salesOrderId)
   }
 
@@ -26,6 +34,7 @@ export default function BillingsPage() {
       <div>
         <h2 className="text-2xl font-bold text-zinc-900">Billings</h2>
         <p className="text-sm text-zinc-600">Manage invoices and billing records</p>
+        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
 
       {/* Pending Billings */}
@@ -47,27 +56,31 @@ export default function BillingsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {deliveredOrders.map((order) => (
+                  {deliveredOrders.map((order: any) => (
                     <tr key={order.id} className="border-b border-zinc-100">
                       <td className="py-4">
                         <Link href={`/orders/${order.id}`} className="text-sm text-red-500 hover:underline">
                           #{order.id}
                         </Link>
                       </td>
-                      <td className="py-4 text-sm text-zinc-700">Customer {order.customer_id}</td>
+                      <td className="py-4 text-sm text-zinc-700">{order.customer_name || `Customer ${order.customer_id}`}</td>
                       <td className="py-4 text-right text-sm font-medium text-zinc-900">
                         ₱{order.total_amount.toFixed(2)}
                       </td>
-                      <td className="py-4 text-sm text-zinc-600">{new Date(order.created_at).toLocaleDateString()}</td>
+                      <td className="py-4 text-sm text-zinc-600">
+                        {order.created_at ? new Date(order.created_at).toLocaleDateString() : "-"}
+                      </td>
                       <td className="py-4 text-right">
-                        <Button
-                          size="sm"
-                          onClick={() => createBilling(order.id)}
-                          className="bg-green-500 text-white hover:bg-green-600"
-                        >
-                          <FileText className="mr-1 h-3 w-3" />
-                          Generate Invoice
-                        </Button>
+                        <form action={createBillingAction.bind(null, order.id)}>
+                          <Button
+                            size="sm"
+                            type="submit"
+                            className="bg-green-500 text-white hover:bg-green-600"
+                          >
+                            <FileText className="mr-1 h-3 w-3" />
+                            Generate Invoice
+                          </Button>
+                        </form>
                       </td>
                     </tr>
                   ))}
@@ -97,32 +110,40 @@ export default function BillingsPage() {
                 </tr>
               </thead>
               <tbody>
-                {billings.map((billing) => {
-                  const order = getOrderDetails(billing.sales_order_id)
-                  return (
-                    <tr key={billing.id} className="border-b border-zinc-100">
-                      <td className="py-4 text-sm font-medium text-zinc-900">BILL-{billing.id}</td>
-                      <td className="py-4">
-                        <Link
-                          href={`/orders/${billing.sales_order_id}`}
-                          className="text-sm text-red-500 hover:underline"
-                        >
-                          #{billing.sales_order_id}
-                        </Link>
-                      </td>
-                      <td className="py-4 text-sm text-zinc-700">{billing.invoice_number}</td>
-                      <td className="py-4 text-right text-sm font-medium text-zinc-900">₱{billing.amount.toFixed(2)}</td>
-                      <td className="py-4 text-sm text-zinc-600">
-                        {new Date(billing.billed_date).toLocaleDateString()}
-                      </td>
-                      <td className="py-4">
-                        <Badge variant="secondary" className="bg-green-100 text-green-700">
-                          Billed
-                        </Badge>
-                      </td>
-                    </tr>
-                  )
-                })}
+                {billings.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-6 text-center text-sm text-zinc-500">
+                      No billings available.
+                    </td>
+                  </tr>
+                ) : (
+                  billings.map((billing: Billing) => {
+                    const order = getOrderDetails(billing.sales_order_id)
+                    return (
+                      <tr key={billing.id} className="border-b border-zinc-100">
+                        <td className="py-4 text-sm font-medium text-zinc-900">BILL-{billing.id}</td>
+                        <td className="py-4">
+                          <Link
+                            href={`/orders/${billing.sales_order_id}`}
+                            className="text-sm text-red-500 hover:underline"
+                          >
+                            #{billing.sales_order_id}
+                          </Link>
+                        </td>
+                        <td className="py-4 text-sm text-zinc-700">{billing.invoice_number || "N/A"}</td>
+                        <td className="py-4 text-right text-sm font-medium text-zinc-900">₱{billing.amount.toFixed(2)}</td>
+                        <td className="py-4 text-sm text-zinc-600">
+                          {billing.billed_date ? new Date(billing.billed_date).toLocaleDateString() : "-"}
+                        </td>
+                        <td className="py-4">
+                          <Badge variant="secondary" className="bg-green-100 text-green-700">
+                            Billed
+                          </Badge>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
               </tbody>
             </table>
           </div>
