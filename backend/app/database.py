@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, create_engine, Session
+import os
 
-DATABASE_URL = "postgresql://neondb_owner:npg_5bN2zUaXMfxi@ep-round-tree-a12imzh0-pooler.ap-southeast-1.aws.neon.tech/mto-capstone-simple?sslmode=require&channel_binding=require"
+DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL, echo=True)
 
 def init_db():
