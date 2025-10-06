@@ -1,3 +1,0 @@
-# MTO Backend Application
-
-
