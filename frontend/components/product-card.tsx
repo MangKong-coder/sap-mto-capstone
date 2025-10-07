@@ -27,10 +27,9 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-square overflow-hidden bg-muted">
-          <Image
+          <img
             src={product.image_url || "/placeholder.svg"}
             alt={product.name}
-            fill
             className="object-cover transition-transform group-hover:scale-105"
           />
           {product.stock_qty > 0 && product.stock_qty < 20 && (

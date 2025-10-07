@@ -62,10 +62,9 @@ async function ProductsTable() {
                         <div className="flex items-center gap-3">
                           {product.image_url && (
                             <div className="relative h-10 w-10 overflow-hidden rounded-md bg-zinc-100">
-                              <Image
+                              <img
                                 src={product.image_url || "/placeholder.svg"}
                                 alt={product.name}
-                                fill
                                 className="object-cover"
                               />
                             </div>

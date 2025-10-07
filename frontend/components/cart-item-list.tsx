@@ -18,10 +18,9 @@ export function CartItemList() {
           <CardContent className="p-4">
             <div className="flex gap-4">
               <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md bg-muted">
-                <Image
+                <img
                   src={item.product.image_url || "/placeholder.svg"}
                   alt={item.product.name}
-                  fill
                   className="object-cover"
                 />
               </div>

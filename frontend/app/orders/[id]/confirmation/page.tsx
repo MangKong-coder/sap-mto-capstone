@@ -1,31 +1,31 @@
-"use client"
-
-import { use } from "react"
 import Link from "next/link"
 import { CheckCircle2, Package, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { useOrdersStore } from "@/lib/orders-store"
-import { mockCustomer, mockProducts } from "@/lib/mock-data"
+import { getOrderDetail } from "@/lib/dal/orders"
 import { SalesOrderStatus } from "@/lib/types"
 
 interface PageProps {
   params: Promise<{ id: string }>
 }
 
-export default function OrderConfirmationPage({ params }: PageProps) {
-  const { id } = use(params)
+export default async function OrderConfirmationPage({ params }: PageProps) {
+  const { id } = await params
   const orderId = Number.parseInt(id)
-  const order = useOrdersStore((state) => state.getOrderById(orderId))
 
-  if (!order) {
+  // Fetch order details from backend
+  let order
+  try {
+    order = await getOrderDetail(orderId)
+  } catch (error) {
+    console.error("Failed to fetch order:", error)
     return (
       <main className="px-12 py-16">
         <div className="mx-auto max-w-md text-center">
           <h1 className="font-bold text-2xl">Order not found</h1>
-          <p className="mt-2 text-muted-foreground">The order you're looking for doesn't exist.</p>
+          <p className="mt-2 text-muted-foreground">The order you're looking for doesn't exist or failed to load.</p>
           <Button asChild className="mt-4">
             <Link href="/orders">View My Orders</Link>
           </Button>
@@ -66,7 +66,7 @@ export default function OrderConfirmationPage({ params }: PageProps) {
           </div>
           <div>
             <h1 className="font-bold text-3xl">Order Confirmed!</h1>
-            <p className="mt-2 text-muted-foreground">Thank you for your order, {mockCustomer.name}</p>
+            <p className="mt-2 text-muted-foreground">Thank you for your order!</p>
           </div>
         </div>
 
@@ -89,20 +89,15 @@ export default function OrderConfirmationPage({ params }: PageProps) {
             <div>
               <h3 className="mb-3 font-semibold">Order Items</h3>
               <div className="space-y-3">
-                {order.items.map((item) => {
-                  const product = mockProducts.find((p) => p.id === item.product_id)
-                  if (!product) return null
-
-                  return (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <div className="flex-1">
-                        <span className="font-medium">{product.name}</span>
-                        <span className="text-muted-foreground"> × {item.quantity}</span>
-                      </div>
-                      <span className="font-medium">₱{item.subtotal.toFixed(2)}</span>
+                {order.items.map((item) => (
+                  <div key={item.id} className="flex justify-between text-sm">
+                    <div className="flex-1">
+                      <span className="font-medium">{item.product_name || `Product #${item.product_id}`}</span>
+                      <span className="text-muted-foreground"> × {item.quantity}</span>
                     </div>
-                  )
-                })}
+                    <span className="font-medium">₱{item.subtotal.toFixed(2)}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
