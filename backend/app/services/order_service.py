@@ -108,11 +108,19 @@ def create_order_with_items(
 
     try:
         for item in items:
-            quantity = item["quantity"]
+            # Handle both dict and object inputs
+            if isinstance(item, dict):
+                quantity = item["quantity"]
+                product_id = item["product_id"]
+            else:
+                # Handle Pydantic model objects
+                quantity = getattr(item, "quantity", 0)
+                product_id = getattr(item, "product_id", 0)
+
             if quantity <= 0:
                 raise ValueError("Item quantity must be greater than zero.")
 
-            product = product_repo.get_or_raise(session, item["product_id"])
+            product = product_repo.get_or_raise(session, product_id)
             subtotal = product.price * quantity
             total_amount += subtotal
             order_items.append(
