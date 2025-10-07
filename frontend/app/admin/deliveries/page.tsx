@@ -112,7 +112,12 @@ export default async function DeliveriesPage() {
                           <div className="flex justify-end gap-2">
                             {delivery.status === DeliveryStatus.PENDING &&
                               order?.status === SalesOrderStatus.READY_FOR_DELIVERY && (
-                                <form action={updateDeliveryStatusAction.bind(null, delivery.id, DeliveryStatus.DELIVERED)}>
+                                <form
+                                  action={async (_formData: FormData) => {
+                                    "use server"
+                                    await updateDeliveryStatusAction(delivery.id, DeliveryStatus.DELIVERED)
+                                  }}
+                                >
                                   <Button
                                     size="sm"
                                     type="submit"
@@ -124,7 +129,12 @@ export default async function DeliveriesPage() {
                                 </form>
                               )}
                             {delivery.status === DeliveryStatus.PENDING && (
-                              <form action={updateDeliveryStatusAction.bind(null, delivery.id, DeliveryStatus.CANCELLED)}>
+                              <form
+                                action={async (_formData: FormData) => {
+                                  "use server"
+                                  await updateDeliveryStatusAction(delivery.id, DeliveryStatus.CANCELLED)
+                                }}
+                              >
                                 <Button
                                   size="sm"
                                   type="submit"

@@ -4,7 +4,7 @@
 
 "use server"
 
-import { revalidatePath } from "next/navigation"
+import { revalidatePath } from "next/cache"
 import { createBilling, getBillings } from "@/lib/dal/billings"
 import { updateDeliveryStatus, getDeliveries } from "@/lib/dal/deliveries"
 import { updateProductionStatus, getProductionOrders } from "@/lib/dal/production-orders"
@@ -12,17 +12,17 @@ import { updateProductionStatus, getProductionOrders } from "@/lib/dal/productio
 /**
  * Create a billing for a sales order
  */
-export async function createBillingAction(salesOrderId: number) {
+export async function createBillingAction(formData: FormData) {
+  const salesOrderId = Number(formData.get("salesOrderId"))
+  if (!Number.isFinite(salesOrderId)) {
+    throw new Error("salesOrderId is required to create billing")
+  }
   try {
     await createBilling(salesOrderId)
     revalidatePath("/admin/billings")
-    return { success: true, message: "Billing created successfully" }
   } catch (error) {
     console.error("Failed to create billing:", error)
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to create billing"
-    }
+    throw error
   }
 }
 

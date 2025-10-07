@@ -99,7 +99,12 @@ export default async function ProductionOrdersPage() {
                         <td className="py-4 text-right">
                           <div className="flex justify-end gap-2">
                             {po.status === ProductionOrderStatus.PLANNED && (
-                              <form action={updateProductionStatusAction.bind(null, po.id, ProductionOrderStatus.IN_PROGRESS)}>
+                              <form
+                                action={async (_formData: FormData) => {
+                                  "use server"
+                                  await updateProductionStatusAction(po.id, ProductionOrderStatus.IN_PROGRESS)
+                                }}
+                              >
                                 <Button
                                   size="sm"
                                   type="submit"
@@ -111,7 +116,12 @@ export default async function ProductionOrdersPage() {
                               </form>
                             )}
                             {po.status === ProductionOrderStatus.IN_PROGRESS && (
-                              <form action={updateProductionStatusAction.bind(null, po.id, ProductionOrderStatus.COMPLETED)}>
+                              <form
+                                action={async (_formData: FormData) => {
+                                  "use server"
+                                  await updateProductionStatusAction(po.id, ProductionOrderStatus.COMPLETED)
+                                }}
+                              >
                                 <Button
                                   size="sm"
                                   type="submit"
@@ -123,7 +133,12 @@ export default async function ProductionOrdersPage() {
                               </form>
                             )}
                             {(po.status === ProductionOrderStatus.PLANNED || po.status === ProductionOrderStatus.IN_PROGRESS) && (
-                              <form action={updateProductionStatusAction.bind(null, po.id, ProductionOrderStatus.CANCELLED)}>
+                              <form
+                                action={async (_formData: FormData) => {
+                                  "use server"
+                                  await updateProductionStatusAction(po.id, ProductionOrderStatus.CANCELLED)
+                                }}
+                              >
                                 <Button
                                   size="sm"
                                   type="submit"

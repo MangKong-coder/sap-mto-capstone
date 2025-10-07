@@ -24,6 +24,17 @@ export const ProductSchema = z.object({
   image_url: z.string().nullable()
 })
 
+/**
+ * Zod schema for Product creation request
+ */
+export const ProductCreateRequestSchema = z.object({
+  name: z.string().min(1, "Product name is required"),
+  description: z.string().min(1, "Product description is required"),
+  price: z.number().min(0.01, "Price must be greater than 0"),
+  stock_qty: z.number().min(0, "Stock quantity must be 0 or greater").default(0),
+  image_url: z.string().url("Invalid image URL").optional().or(z.literal(""))
+})
+
 
 /**
  * Fetch all products from the API
@@ -135,5 +146,69 @@ export async function getProductById(productId: number): Promise<Product> {
 
     console.error(`Failed to fetch product ${productId}:`, error)
     throw new Error(`Failed to load product: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
+}
+
+
+/**
+ * Create a new product
+ * @param productData - Product data to create
+ * @returns Promise resolving to the created product
+ * @throws Error if API request fails or returns invalid response
+ */
+export async function createProduct(productData: {
+  name: string
+  description: string
+  price: number
+  stock_qty?: number
+  image_url?: string
+}): Promise<Product> {
+  try {
+    // Validate the input data using Zod
+    const validatedData = ProductCreateRequestSchema.parse(productData)
+
+    const baseUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL
+    if (!baseUrl) {
+      throw new Error("BACKEND_API_URL or NEXT_PUBLIC_API_URL is not configured")
+    }
+
+    const response = await fetch(`${baseUrl}/api/products`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(validatedData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    const rawData = await response.json()
+
+    // Validate the API response structure using Zod
+    const apiResponseSchema = ApiResponseSchema(ProductSchema)
+    const apiResponse = apiResponseSchema.parse(rawData)
+
+    // Transform the validated data to match our Product interface
+    const product: Product = {
+      id: apiResponse.data.id,
+      name: apiResponse.data.name,
+      description: apiResponse.data.description,
+      price: apiResponse.data.price,
+      stock_qty: apiResponse.data.stock_qty ?? 0, // Convert null to 0 for our interface
+      image_url: apiResponse.data.image_url
+    }
+
+    return product
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('Product creation validation failed:', error.errors)
+      throw new Error(`Invalid product data: ${error.message}`)
+    }
+
+    console.error('Failed to create product:', error)
+    throw new Error(`Failed to create product: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }

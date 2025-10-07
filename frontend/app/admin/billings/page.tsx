@@ -71,7 +71,8 @@ export default async function BillingsPage() {
                         {order.created_at ? new Date(order.created_at).toLocaleDateString() : "-"}
                       </td>
                       <td className="py-4 text-right">
-                        <form action={createBillingAction.bind(null, order.id)}>
+                        <form action={createBillingAction}>
+                          <input type="hidden" name="salesOrderId" value={order.id} />
                           <Button
                             size="sm"
                             type="submit"

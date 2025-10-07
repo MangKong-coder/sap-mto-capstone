@@ -5,6 +5,7 @@
 
 import { z } from 'zod'
 import { ApiResponseSchema } from '../schema/api-response'
+import { DeliveryStatus } from '../types'
 
 /**
  * Zod schema for Delivery validation
@@ -34,6 +35,20 @@ function assertApiBase(): string {
     throw new Error("BACKEND_API_URL or NEXT_PUBLIC_API_URL is not configured")
   }
   return API_BASE
+}
+
+
+export async function updateDeliveryStatus(
+  deliveryId: number,
+  status: string,
+  fetchOptions: RequestInit = {},
+): Promise<Delivery> {
+  switch (status) {
+    case DeliveryStatus.DELIVERED:
+      return completeDelivery(deliveryId, fetchOptions)
+    default:
+      throw new Error(`Unsupported delivery status update: ${status}`)
+  }
 }
 
 /**
@@ -82,15 +97,14 @@ export async function getDeliveries(fetchOptions: RequestInit = {}): Promise<Del
  * @returns Promise resolving to the updated delivery
  * @throws Error if API request fails or returns invalid response
  */
-export async function updateDeliveryStatus(deliveryId: number, status: string, fetchOptions: RequestInit = {}): Promise<Delivery> {
+export async function completeDelivery(deliveryId: number, fetchOptions: RequestInit = {}): Promise<Delivery> {
   try {
-    const response = await fetch(`${assertApiBase()}/api/deliveries/${deliveryId}/status`, {
+    const response = await fetch(`${assertApiBase()}/api/deliveries/${deliveryId}/complete`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         ...fetchOptions.headers,
       },
-      body: JSON.stringify({ status }),
       ...fetchOptions,
     })
 
@@ -112,7 +126,7 @@ export async function updateDeliveryStatus(deliveryId: number, status: string, f
       throw new Error(`API returned invalid response format: ${error.message}`)
     }
 
-    console.error(`Failed to update delivery ${deliveryId} status:`, error)
-    throw new Error(`Failed to update delivery status: ${error instanceof Error ? error.message : "Unknown error"}`)
+    console.error(`Failed to complete delivery ${deliveryId}:`, error)
+    throw new Error(`Failed to complete delivery: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }

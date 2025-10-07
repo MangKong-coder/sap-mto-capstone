@@ -8,7 +8,7 @@ import { z } from "zod"
 import { ApiResponseSchema } from "../schema/api-response"
 import { SalesOrderStatus } from "../types"
 
-const OrderSummarySchema = z.object({
+export const OrderSummarySchema = z.object({
   id: z.number(),
   customer_name: z.string().nullable(),
   status: z.nativeEnum(SalesOrderStatus),
@@ -18,7 +18,7 @@ const OrderSummarySchema = z.object({
 
 const OrderListResponseSchema = ApiResponseSchema(z.array(OrderSummarySchema))
 
-const OrderDetailSchema = z.object({
+export const OrderDetailSchema = z.object({
   id: z.number(),
   customer_id: z.number(),
   customer_name: z.string().nullable(),
@@ -60,6 +60,18 @@ const OrderDetailSchema = z.object({
 })
 
 const OrderDetailResponseSchema = ApiResponseSchema(OrderDetailSchema)
+
+const OrderItemPayloadSchema = z.object({
+  product_id: z.number(),
+  quantity: z.number().min(1, "Quantity must be at least 1"),
+})
+
+const OrderCreateRequestSchema = z.object({
+  customer_id: z.number(),
+  items: z.array(OrderItemPayloadSchema),
+})
+
+const OrderCreateResponseSchema = ApiResponseSchema(OrderDetailSchema)
 
 const ProductionOrderSchema = z.object({
   id: z.number(),
@@ -305,5 +317,45 @@ export async function completeProductionOrder(productionId: number): Promise<Pro
 
     console.error(`Failed to complete production ${productionId}:`, error)
     throw new Error(`Failed to complete production order: ${error instanceof Error ? error.message : "Unknown error"}`)
+  }
+}
+
+
+export async function createOrder(
+  customerId: number,
+  items: Array<{ product_id: number; quantity: number }>
+): Promise<OrderDetail> {
+  try {
+    // Validate the input data using Zod
+    const validatedData = OrderCreateRequestSchema.parse({
+      customer_id: customerId,
+      items: items,
+    })
+
+    const response = await fetch(`${assertApiBase()}/api/orders`, {
+      method: "POST",
+      headers: buildHeaders(undefined, {
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify(validatedData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    const rawData = await response.json()
+    const parsed = OrderCreateResponseSchema.parse(rawData)
+
+    return parsed.data
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Order creation validation failed:", error.errors)
+      throw new Error(`Invalid order data: ${error.message}`)
+    }
+
+    console.error("Failed to create order:", error)
+    throw new Error(`Failed to create order: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }

@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Header } from "@/components/header"
 import { Suspense } from "react"
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -26,6 +27,7 @@ export default function RootLayout({
           {children}
         </Suspense>
         <Analytics />
+        <Toaster />
       </body>
     </html>
   )

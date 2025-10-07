@@ -1,20 +1,14 @@
+import { Suspense } from "react"
 import { getProducts } from "@/lib/dal"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Edit, Trash2, Package } from "lucide-react"
 import Image from "next/image"
+import { CreateProductDialog } from "@/components/admin/create-product-dialog"
+import { Product } from "@/lib/types"
 
-export default async function ProductsPage() {
-  let products = []
-  let error = null
-
-  try {
-    products = await getProducts()
-  } catch (err) {
-    error = err instanceof Error ? err.message : "Failed to load products"
-  }
-
+export default function ProductsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -22,16 +16,21 @@ export default async function ProductsPage() {
           <h2 className="text-2xl font-bold text-zinc-900">Product Management</h2>
           <p className="text-sm text-zinc-600">Manage product catalog and inventory</p>
         </div>
+        <CreateProductDialog />
       </div>
 
-      {error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6">
-            <p className="text-sm text-red-600">{error}</p>
-          </CardContent>
-        </Card>
-      )}
+      <Suspense fallback={<ProductsTableSkeleton />}>
+        <ProductsTable />
+      </Suspense>
+    </div>
+  )
+}
 
+async function ProductsTable() {
+  try {
+    const products = await getProducts()
+
+    return (
       <Card className="border-zinc-200 bg-white">
         <CardHeader>
           <CardTitle className="text-zinc-900">All Products</CardTitle>
@@ -57,7 +56,7 @@ export default async function ProductsPage() {
                     </td>
                   </tr>
                 ) : (
-                  products.map((product) => (
+                  products.map((product: Product) => (
                     <tr key={product.id} className="border-b border-zinc-100">
                       <td className="py-4">
                         <div className="flex items-center gap-3">
@@ -117,6 +116,45 @@ export default async function ProductsPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    )
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to load products"
+
+    return (
+      <Card className="border-red-200 bg-red-50">
+        <CardContent className="pt-6">
+          <p className="text-sm text-red-600">{message}</p>
+        </CardContent>
+      </Card>
+    )
+  }
+}
+
+function ProductsTableSkeleton() {
+  return (
+    <Card className="border-zinc-200 bg-white">
+      <CardHeader>
+        <CardTitle className="text-zinc-900">All Products</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-md bg-zinc-200 animate-pulse" />
+                <div className="h-4 w-32 rounded bg-zinc-200 animate-pulse" />
+              </div>
+              <div className="h-4 w-24 rounded bg-zinc-200 animate-pulse" />
+              <div className="h-4 w-16 rounded bg-zinc-200 animate-pulse" />
+              <div className="h-4 w-20 rounded bg-zinc-200 animate-pulse" />
+              <div className="flex gap-2">
+                <div className="h-8 w-8 rounded bg-zinc-200 animate-pulse" />
+                <div className="h-8 w-8 rounded bg-zinc-200 animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 }

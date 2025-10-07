@@ -5,6 +5,7 @@
 
 import { z } from 'zod'
 import { ApiResponseSchema } from '../schema/api-response'
+import { ProductionOrderStatus } from '../types'
 
 /**
  * Zod schema for ProductionOrder validation
@@ -35,6 +36,22 @@ function assertApiBase(): string {
     throw new Error("BACKEND_API_URL or NEXT_PUBLIC_API_URL is not configured")
   }
   return API_BASE
+}
+
+
+export async function updateProductionStatus(
+  productionId: number,
+  status: string,
+  fetchOptions: RequestInit = {},
+): Promise<ProductionOrder> {
+  switch (status) {
+    case ProductionOrderStatus.IN_PROGRESS:
+      return markProductionInProgress(productionId, fetchOptions)
+    case ProductionOrderStatus.COMPLETED:
+      return completeProductionOrder(productionId, fetchOptions)
+    default:
+      throw new Error(`Unsupported production status update: ${status}`)
+  }
 }
 
 /**
@@ -83,15 +100,14 @@ export async function getProductionOrders(fetchOptions: RequestInit = {}): Promi
  * @returns Promise resolving to the updated production order
  * @throws Error if API request fails or returns invalid response
  */
-export async function updateProductionStatus(productionId: number, status: string, fetchOptions: RequestInit = {}): Promise<ProductionOrder> {
+export async function markProductionInProgress(productionId: number, fetchOptions: RequestInit = {}): Promise<ProductionOrder> {
   try {
-    const response = await fetch(`${assertApiBase()}/api/production-orders/${productionId}/status`, {
+    const response = await fetch(`${assertApiBase()}/api/production-orders/${productionId}/start`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         ...fetchOptions.headers,
       },
-      body: JSON.stringify({ status }),
       ...fetchOptions,
     })
 
@@ -113,7 +129,41 @@ export async function updateProductionStatus(productionId: number, status: strin
       throw new Error(`API returned invalid response format: ${error.message}`)
     }
 
-    console.error(`Failed to update production order ${productionId} status:`, error)
-    throw new Error(`Failed to update production order status: ${error instanceof Error ? error.message : "Unknown error"}`)
+    console.error(`Failed to mark production ${productionId} in progress:`, error)
+    throw new Error(`Failed to mark production in progress: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
+export async function completeProductionOrder(productionId: number, fetchOptions: RequestInit = {}): Promise<ProductionOrder> {
+  try {
+    const response = await fetch(`${assertApiBase()}/api/production-orders/${productionId}/complete`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...fetchOptions.headers,
+      },
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const detail = await response.json().catch(() => null)
+      throw new Error(detail?.detail ?? `HTTP error! status: ${response.status}`)
+    }
+
+    const rawData = await response.json()
+
+    // Validate the API response structure using Zod
+    const apiResponseSchema = ApiResponseSchema(ProductionOrderSchema)
+    const apiResponse = apiResponseSchema.parse(rawData)
+
+    return apiResponse.data
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("API response validation failed:", error.errors)
+      throw new Error(`API returned invalid response format: ${error.message}`)
+    }
+
+    console.error(`Failed to complete production ${productionId}:`, error)
+    throw new Error(`Failed to complete production: ${error instanceof Error ? error.message : "Unknown error"}`)
+  }
+}
+

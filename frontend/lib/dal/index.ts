@@ -44,11 +44,11 @@ export { getBillings, createBilling, BillingSchema } from './billings'
 export type { Billing } from './billings'
 
 // Deliveries domain
-export { getDeliveries, updateDeliveryStatus, DeliverySchema } from './deliveries'
+export { getDeliveries, completeDelivery, DeliverySchema } from './deliveries'
 
 export type { Delivery } from './deliveries'
 
 // Production Orders domain
-export { getProductionOrders, updateProductionStatus, ProductionOrderSchema } from './production-orders'
+export { getProductionOrders, ProductionOrderSchema } from './production-orders'
 
 export type { ProductionOrder } from './production-orders'

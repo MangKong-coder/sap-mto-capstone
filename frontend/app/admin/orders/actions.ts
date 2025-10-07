@@ -5,7 +5,7 @@
 
 "use server"
 
-import { revalidatePath } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 import {
   completeProductionOrder,

@@ -1,131 +1,96 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Search, Play, CheckCircle } from "lucide-react"
 
-import {
-  OrderSummary,
-  startProduction,
-  getOrderDetail,
-  markProductionInProgress,
-  completeProductionOrder,
-} from "@/lib/dal"
+import { OrderSummary } from "@/lib/dal"
 import { SalesOrderStatus } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  startProductionAction,
+  markOrderReadyAction,
+  updateOrderStatusAction,
+  deleteOrderAction
+} from "@/app/admin/orders/actions"
 
 type OrdersTableProps = {
   initialOrders: OrderSummary[]
   initialError?: string | null
 }
 
-function ensureDate(value: Date | string | undefined): Date | undefined {
-  if (!value) {
-    return undefined
-  }
-  return value instanceof Date ? value : new Date(value)
-}
-
 export default function OrdersTable({ initialOrders, initialError = null }: OrdersTableProps) {
   const router = useRouter()
-  const [orders, setOrders] = useState(() =>
-    initialOrders.map((order) => ({
-      ...order,
-      created_at: ensureDate(order.created_at),
-    })),
-  )
   const [searchTerm, setSearchTerm] = useState("")
   const [actionError, setActionError] = useState<string | null>(initialError)
   const [actionSuccess, setActionSuccess] = useState<string | null>(null)
-  const [pendingAction, setPendingAction] = useState<{ orderId: number; type: "start" | "ready" } | null>(null)
+  const [pendingActions, setPendingActions] = useState<Set<number>>(new Set())
+  const [isPending, startTransition] = useTransition()
 
-  const filteredOrders = useMemo(() => {
+  // Filter orders based on search term
+  const filteredOrders = initialOrders.filter((order) => {
     const query = searchTerm.trim().toLowerCase()
-    if (!query) {
-      return orders
-    }
+    if (!query) return true
 
-    return orders.filter((order) => {
-      const idMatches = order.id.toString().includes(query)
-      const nameMatches = (order.customer_name ?? "").toLowerCase().includes(query)
-      return idMatches || nameMatches
-    })
-  }, [orders, searchTerm])
-
-  const updateOrderFromDetail = (orderId: number, detail: Awaited<ReturnType<typeof getOrderDetail>>) => {
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId
-          ? {
-              ...order,
-              status: detail.status,
-              customer_name: detail.customer_name,
-              total_amount: detail.total_amount,
-              created_at: ensureDate(detail.created_at),
-            }
-          : order,
-      ),
-    )
-  }
+    const idMatches = order.id.toString().includes(query)
+    const nameMatches = (order.customer_name ?? "").toLowerCase().includes(query)
+    return idMatches || nameMatches
+  })
 
   const handleStartProduction = async (orderId: number) => {
-    setPendingAction({ orderId, type: "start" })
+    setPendingActions(prev => new Set(prev).add(orderId))
     setActionError(null)
     setActionSuccess(null)
 
-    try {
-      await startProduction(orderId)
-      const detail = await getOrderDetail(orderId)
-      updateOrderFromDetail(orderId, detail)
-      setActionSuccess(`Order #${orderId} moved to production.`)
-      router.refresh()
-    } catch (error) {
-      setActionError(error instanceof Error ? error.message : "Failed to start production")
-    } finally {
-      setPendingAction(null)
-    }
+    startTransition(async () => {
+      try {
+        const result = await startProductionAction(orderId)
+        if (result.success) {
+          setActionSuccess(result.message)
+          router.refresh() // Refresh to get updated data
+        } else {
+          setActionError(result.message)
+        }
+      } catch (error) {
+        setActionError(error instanceof Error ? error.message : "Failed to start production")
+      } finally {
+        setPendingActions(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(orderId)
+          return newSet
+        })
+      }
+    })
   }
 
   const handleMarkReady = async (orderId: number) => {
-    setPendingAction({ orderId, type: "ready" })
+    setPendingActions(prev => new Set(prev).add(orderId))
     setActionError(null)
     setActionSuccess(null)
 
-    try {
-      const detail = await getOrderDetail(orderId)
-      if (!detail.production_orders.length) {
-        throw new Error("No production order found for this sales order")
+    startTransition(async () => {
+      try {
+        const result = await markOrderReadyAction(orderId)
+        if (result.success) {
+          setActionSuccess(result.message)
+          router.refresh() // Refresh to get updated data
+        } else {
+          setActionError(result.message)
+        }
+      } catch (error) {
+        setActionError(error instanceof Error ? error.message : "Failed to mark order ready for delivery")
+      } finally {
+        setPendingActions(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(orderId)
+          return newSet
+        })
       }
-
-      const activeProduction = detail.production_orders.find((po) => po.status !== "completed")
-        ?? detail.production_orders[detail.production_orders.length - 1]
-
-      if (!activeProduction) {
-        throw new Error("Unable to locate active production order")
-      }
-
-      let productionState = activeProduction
-      if (productionState.status === "planned") {
-        productionState = await markProductionInProgress(productionState.id)
-      }
-
-      if (productionState.status !== "completed") {
-        await completeProductionOrder(productionState.id)
-      }
-
-      const refreshed = await getOrderDetail(orderId)
-      updateOrderFromDetail(orderId, refreshed)
-      setActionSuccess(`Order #${orderId} marked ready for delivery.`)
-      router.refresh()
-    } catch (error) {
-      setActionError(error instanceof Error ? error.message : "Failed to mark order ready for delivery")
-    } finally {
-      setPendingAction(null)
-    }
+    })
   }
 
   const getStatusColor = (status: SalesOrderStatus) => {
@@ -146,6 +111,8 @@ export default function OrdersTable({ initialOrders, initialError = null }: Orde
         return "bg-zinc-500/10 text-zinc-500"
     }
   }
+
+  const isPendingForOrder = (orderId: number) => pendingActions.has(orderId)
 
   return (
     <div className="space-y-6">
@@ -170,6 +137,7 @@ export default function OrdersTable({ initialOrders, initialError = null }: Orde
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 className="border-zinc-300 bg-white pl-9 text-zinc-900 placeholder:text-zinc-400"
+                disabled={isPending}
               />
             </div>
           </div>
@@ -199,8 +167,7 @@ export default function OrdersTable({ initialOrders, initialError = null }: Orde
                   const formattedDate = order.created_at
                     ? new Date(order.created_at).toLocaleDateString()
                     : "--"
-                  const isStartPending = pendingAction?.orderId === order.id && pendingAction?.type === "start"
-                  const isReadyPending = pendingAction?.orderId === order.id && pendingAction?.type === "ready"
+                  const isStartPending = isPendingForOrder(order.id)
 
                   return (
                     <tr key={order.id} className="border-b border-zinc-100">
@@ -236,10 +203,10 @@ export default function OrdersTable({ initialOrders, initialError = null }: Orde
                               variant="outline"
                               onClick={() => handleMarkReady(order.id)}
                               className="border-zinc-300 text-zinc-700 hover:bg-zinc-100"
-                              disabled={isReadyPending}
+                              disabled={isPendingForOrder(order.id)}
                             >
                               <CheckCircle className="mr-1 h-3 w-3" />
-                              {isReadyPending ? "Marking..." : "Mark Ready"}
+                              {isPendingForOrder(order.id) ? "Marking..." : "Mark Ready"}
                             </Button>
                           )}
                         </div>
