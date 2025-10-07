@@ -10,7 +10,7 @@ from app.schemas.billings import BillingCreateRequest, BillingResponse
 from app.schemas.common import SuccessResponse
 from app.services import billing_service
 
-router = APIRouter(prefix="/api/billings", tags=["Billings"])
+router = APIRouter(prefix="/api/billings", tags=["Billings"], redirect_slashes=False)
 
 
 @router.get("/", response_model=SuccessResponse[list[BillingResponse]])

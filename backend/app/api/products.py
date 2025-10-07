@@ -10,7 +10,7 @@ from app.schemas.common import SuccessResponse
 from app.schemas.products import ProductCreateRequest, ProductResponse
 from app.services import product_service
 
-router = APIRouter(prefix="/api/products", tags=["Products"])
+router = APIRouter(prefix="/api/products", tags=["Products"], redirect_slashes=False)
 
 
 @router.get("/", response_model=SuccessResponse[list[ProductResponse]])

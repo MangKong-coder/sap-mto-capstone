@@ -15,7 +15,7 @@ from app.schemas.orders import (
 )
 from app.services import order_service
 
-router = APIRouter(prefix="/api/orders", tags=["Orders"])
+router = APIRouter(prefix="/api/orders", tags=["Orders"], redirect_slashes=False)
 
 
 @router.get("/", response_model=SuccessResponse[list[OrderSummaryResponse]])

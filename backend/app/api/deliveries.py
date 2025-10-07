@@ -10,7 +10,7 @@ from app.schemas.common import SuccessResponse
 from app.schemas.deliveries import DeliveryCreateRequest, DeliveryResponse
 from app.services import delivery_service
 
-router = APIRouter(prefix="/api/deliveries", tags=["Deliveries"])
+router = APIRouter(prefix="/api/deliveries", tags=["Deliveries"], redirect_slashes=False)
 
 
 @router.get("/", response_model=SuccessResponse[list[DeliveryResponse]])

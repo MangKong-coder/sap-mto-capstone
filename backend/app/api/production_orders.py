@@ -13,7 +13,7 @@ from app.schemas.production_orders import (
 )
 from app.services import production_service
 
-router = APIRouter(prefix="/api/production-orders", tags=["Production Orders"])
+router = APIRouter(prefix="/api/production-orders", tags=["Production Orders"], redirect_slashes=False)
 
 
 @router.get("/", response_model=SuccessResponse[list[ProductionOrderResponse]])

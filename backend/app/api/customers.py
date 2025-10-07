@@ -10,7 +10,7 @@ from app.schemas.common import SuccessResponse
 from app.schemas.customers import CustomerResponse
 from app.services import customer_service
 
-router = APIRouter(prefix="/api/customers", tags=["Customers"])
+router = APIRouter(prefix="/api/customers", tags=["Customers"], redirect_slashes=False)
 
 
 @router.get("/", response_model=SuccessResponse[list[CustomerResponse]])

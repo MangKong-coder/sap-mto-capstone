@@ -10,7 +10,7 @@ from app.schemas.common import SuccessResponse
 from app.schemas.dashboard import DashboardSummaryResponse
 from app.services import dashboard_service
 
-router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
+router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"], redirect_slashes=False)
 
 
 @router.get("/summary", response_model=SuccessResponse[DashboardSummaryResponse])
