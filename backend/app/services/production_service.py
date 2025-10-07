@@ -16,6 +16,7 @@ from app.models import (
 from app.repositories.production_order_repository import ProductionOrderRepository
 from app.repositories.sales_order_repository import SalesOrderRepository
 from app.services.exceptions import InvalidTransitionError
+from app.services.order_service import transition_to_ready_for_delivery
 
 logger = logging.getLogger(__name__)
 
@@ -118,11 +119,10 @@ def mark_production_complete(session: Session, production_id: int) -> Production
             "end_date": end_time,
         },
     )
-    sales_order_repo.update_status(
-        session,
-        production.sales_order_id,
-        SalesOrderStatus.ready_for_delivery,
-    )
+    
+    # Use order service to transition to ready_for_delivery, which will create delivery entity
+    transition_to_ready_for_delivery(session, production.sales_order_id)
+    
     logger.info(
         "Production order %s completed; sales order %s ready for delivery",
         production_id,

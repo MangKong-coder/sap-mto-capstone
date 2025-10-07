@@ -8,7 +8,7 @@ from typing import Any, TypedDict
 
 from sqlmodel import Session
 
-from app.models import SalesOrder, SalesOrderStatus
+from app.models import Delivery, DeliveryStatus, SalesOrder, SalesOrderStatus
 from app.repositories.billing_repository import BillingRepository
 from app.repositories.customer_repository import CustomerRepository
 from app.repositories.delivery_repository import DeliveryRepository
@@ -229,7 +229,12 @@ def update_order_status(
     order_id: int,
     status: SalesOrderStatus | str,
 ) -> SalesOrder:
-    """Transition an order to a new status if the change is allowed."""
+    """Transition an order to a new status if the change is allowed.
+    
+    Creates associated entities on specific transitions:
+    - Creates Delivery when transitioning to ready_for_delivery
+    - Creates Billing when transitioning to delivered
+    """
 
     desired_status = (
         status
@@ -246,7 +251,37 @@ def update_order_status(
             desired_status,
         )
 
+    # Update the order status
     updated = sales_order_repo.update_status(session, order_id, desired_status)
+    
+    # Create Delivery entity when order becomes ready for delivery
+    if desired_status == SalesOrderStatus.ready_for_delivery:
+        existing_deliveries = delivery_repo.list_by_sales_order(session, order_id)
+        if not existing_deliveries:
+            delivery_repo.create(
+                session,
+                {
+                    "sales_order_id": order_id,
+                    "status": DeliveryStatus.pending,
+                    "delivery_date": None,
+                }
+            )
+            logger.info("Created delivery record for order %s", order_id)
+    
+    # Create Billing entity when order is delivered
+    elif desired_status == SalesOrderStatus.delivered:
+        existing_billing = billing_repo.get_by_sales_order(session, order_id)
+        if not existing_billing:
+            billing_repo.create(
+                session,
+                {
+                    "sales_order_id": order_id,
+                    "amount": updated.total_amount,
+                    "invoice_number": f"INV-{order_id:06d}",
+                }
+            )
+            logger.info("Created billing record for order %s", order_id)
+    
     logger.info(
         "Order %s transitioned from %s to %s",
         order_id,
@@ -254,6 +289,15 @@ def update_order_status(
         desired_status,
     )
     return updated
+
+
+def transition_to_ready_for_delivery(session: Session, order_id: int) -> SalesOrder:
+    """Transition an order to ready_for_delivery status and create delivery entity.
+    
+    This is a dedicated helper to ensure delivery creation happens during the transition
+    to ready_for_delivery status, regardless of how the transition is triggered.
+    """
+    return update_order_status(session, order_id, SalesOrderStatus.ready_for_delivery)
 
 
 def delete_order(session: Session, order_id: int) -> bool:

@@ -164,6 +164,62 @@ def test_update_order_status_invalid_transition(session: Session) -> None:
         )
 
 
+def test_update_order_status_creates_delivery_entity(session: Session) -> None:
+    """Test that transitioning to ready_for_delivery automatically creates a delivery."""
+    customer_id = _create_customer(session)
+    product_id = _create_product(session)
+    order = order_service.create_order_with_items(
+        session,
+        customer_id,
+        [{"product_id": product_id, "quantity": 1}],
+    )
+    
+    # Verify no delivery exists yet
+    deliveries = delivery_repo.list_by_sales_order(session, order.id)
+    assert len(deliveries) == 0
+    
+    # Transition through production
+    order_service.update_order_status(session, order.id, SalesOrderStatus.in_production)
+    
+    # Transition to ready_for_delivery should create delivery
+    order_service.update_order_status(session, order.id, SalesOrderStatus.ready_for_delivery)
+    
+    # Verify delivery was created
+    deliveries = delivery_repo.list_by_sales_order(session, order.id)
+    assert len(deliveries) == 1
+    assert deliveries[0].status == DeliveryStatus.pending
+    assert deliveries[0].sales_order_id == order.id
+
+
+def test_update_order_status_creates_billing_entity(session: Session) -> None:
+    """Test that transitioning to delivered automatically creates a billing."""
+    customer_id = _create_customer(session)
+    product_id = _create_product(session, price=150.0)
+    order = order_service.create_order_with_items(
+        session,
+        customer_id,
+        [{"product_id": product_id, "quantity": 2}],
+    )
+    
+    # Verify no billing exists yet
+    billing = billing_repo.get_by_sales_order(session, order.id)
+    assert billing is None
+    
+    # Transition through statuses
+    order_service.update_order_status(session, order.id, SalesOrderStatus.in_production)
+    order_service.update_order_status(session, order.id, SalesOrderStatus.ready_for_delivery)
+    
+    # Transition to delivered should create billing
+    order_service.update_order_status(session, order.id, SalesOrderStatus.delivered)
+    
+    # Verify billing was created
+    billing = billing_repo.get_by_sales_order(session, order.id)
+    assert billing is not None
+    assert billing.amount == pytest.approx(300.0)
+    assert billing.invoice_number == f"INV-{order.id:06d}"
+    assert billing.sales_order_id == order.id
+
+
 def test_delete_order_removes_items(session: Session) -> None:
     customer_id = _create_customer(session)
     product_id = _create_product(session)
