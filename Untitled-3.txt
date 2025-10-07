@@ -1,0 +1,57 @@
+
+client = <starlette.testclient.TestClient object at 0x105036900>
+
+    def test_list_orders_empty(client: TestClient) -> None:
+        """Test listing orders when none exist."""
+    
+        response = client.get("/api/orders")
+>       assert response.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_api.py:42: AssertionError
+_______________________________________________________________ test_dashboard_summary _______________________________________________________________
+
+client = <starlette.testclient.TestClient object at 0x1058e3390>
+
+    def test_dashboard_summary(client: TestClient) -> None:
+        """Test dashboard summary endpoint."""
+    
+        response = client.get("/api/dashboard/summary")
+>       assert response.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_api.py:52: AssertionError
+_____________________________________________________________ test_list_customers_empty ______________________________________________________________
+
+client = <starlette.testclient.TestClient object at 0x10599a210>
+
+    def test_list_customers_empty(client: TestClient) -> None:
+        """Test listing customers when none exist."""
+    
+        response = client.get("/api/customers")
+>       assert response.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_api.py:68: AssertionError
+______________________________________________________________ test_list_products_empty ______________________________________________________________
+
+client = <starlette.testclient.TestClient object at 0x1059a7820>
+
+    def test_list_products_empty(client: TestClient) -> None:
+        """Test listing products when none exist."""
+    
+        response = client.get("/api/products")
+>       assert response.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_api.py:78: AssertionError
+============================================================== short test summary info ===============================================================
+FAILED tests/test_api.py::test_list_orders_empty - assert 500 == 200
+FAILED tests/test_api.py::test_dashboard_summary - assert 500 == 200
+FAILED tests/test_api.py::test_list_customers_empty - assert 500 == 200
+FAILED tests/test_api.py::test_list_products_empty - assert 500 == 200
+============================================================ 4 failed, 2 passed in 0.58s =============================================================

@@ -1,0 +1,2065 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Mapúa MTO Backend",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/orders/": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List Orders",
+                "description": "Retrieve all sales orders, optionally filtered by status and/or customer ID.",
+                "operationId": "list_orders_api_orders__get",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter by order status",
+                            "title": "Status"
+                        },
+                        "description": "Filter by order status"
+                    },
+                    {
+                        "name": "customer_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter by customer ID",
+                            "title": "Customer Id"
+                        },
+                        "description": "Filter by customer ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_list_OrderSummaryResponse__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create Order",
+                "description": "Create a new sales order with multiple items.",
+                "operationId": "create_order_api_orders__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_OrderDetailResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/{order_id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get Order",
+                "description": "Retrieve full order details including items, production, delivery, and billing.",
+                "operationId": "get_order_api_orders__order_id__get",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_OrderDetailResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Delete Order",
+                "description": "Delete/cancel a sales order.",
+                "operationId": "delete_order_api_orders__order_id__delete",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_dict_str__str__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/{order_id}/status": {
+            "patch": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update Order Status",
+                "description": "Update order status (e.g., admin override or cancel).",
+                "operationId": "update_order_status_api_orders__order_id__status_patch",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Order Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderStatusUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_OrderDetailResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/production-orders/": {
+            "get": {
+                "tags": [
+                    "Production Orders"
+                ],
+                "summary": "List Production Orders",
+                "description": "List all production orders, optionally filtered by status.",
+                "operationId": "list_production_orders_api_production_orders__get",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter by production status",
+                            "title": "Status"
+                        },
+                        "description": "Filter by production status"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_list_ProductionOrderResponse__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Production Orders"
+                ],
+                "summary": "Start Production",
+                "description": "Start production for a given sales order.",
+                "operationId": "start_production_api_production_orders__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductionOrderStartRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_ProductionOrderResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/production-orders/{production_id}/start": {
+            "patch": {
+                "tags": [
+                    "Production Orders"
+                ],
+                "summary": "Mark Production In Progress",
+                "description": "Mark a production order as 'In Progress'.",
+                "operationId": "mark_production_in_progress_api_production_orders__production_id__start_patch",
+                "parameters": [
+                    {
+                        "name": "production_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Production Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_ProductionOrderResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/production-orders/{production_id}/complete": {
+            "patch": {
+                "tags": [
+                    "Production Orders"
+                ],
+                "summary": "Mark Production Complete",
+                "description": "Mark production complete and update related sales order.",
+                "operationId": "mark_production_complete_api_production_orders__production_id__complete_patch",
+                "parameters": [
+                    {
+                        "name": "production_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Production Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_ProductionOrderResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/deliveries/": {
+            "get": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "List Deliveries",
+                "description": "List deliveries, optionally filtered by status.",
+                "operationId": "list_deliveries_api_deliveries__get",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filter by delivery status",
+                            "title": "Status"
+                        },
+                        "description": "Filter by delivery status"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_list_DeliveryResponse__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "Create Delivery",
+                "description": "Create delivery for completed production.",
+                "operationId": "create_delivery_api_deliveries__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeliveryCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_DeliveryResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/deliveries/{delivery_id}/complete": {
+            "patch": {
+                "tags": [
+                    "Deliveries"
+                ],
+                "summary": "Mark Delivery Complete",
+                "description": "Mark delivery as completed and update sales order.",
+                "operationId": "mark_delivery_complete_api_deliveries__delivery_id__complete_patch",
+                "parameters": [
+                    {
+                        "name": "delivery_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Delivery Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_DeliveryResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/billings/": {
+            "get": {
+                "tags": [
+                    "Billings"
+                ],
+                "summary": "List Billings",
+                "description": "Retrieve all billing records.",
+                "operationId": "list_billings_api_billings__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_list_BillingResponse__"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Billings"
+                ],
+                "summary": "Generate Billing",
+                "description": "Generate a billing record after delivery.",
+                "operationId": "generate_billing_api_billings__post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BillingCreateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_BillingResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/billings/{billing_id}": {
+            "get": {
+                "tags": [
+                    "Billings"
+                ],
+                "summary": "Get Billing",
+                "description": "Retrieve specific billing record.",
+                "operationId": "get_billing_api_billings__billing_id__get",
+                "parameters": [
+                    {
+                        "name": "billing_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Billing Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_BillingResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "List Products",
+                "description": "Retrieve full product catalog, optionally filtered by keyword.",
+                "operationId": "list_products_api_products__get",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Search products by name",
+                            "title": "Search"
+                        },
+                        "description": "Search products by name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_list_ProductResponse__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create Product",
+                "description": "Add a new product.",
+                "operationId": "create_product_api_products__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_ProductResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/customers/": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "List Customers",
+                "description": "List all customers, with optional search.",
+                "operationId": "list_customers_api_customers__get",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Search customers by name",
+                            "title": "Search"
+                        },
+                        "description": "Search customers by name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_list_CustomerResponse__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/summary": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Dashboard Summary",
+                "description": "Aggregate KPIs for admin dashboard.",
+                "operationId": "get_dashboard_summary_api_dashboard_summary_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse_DashboardSummaryResponse_"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BillingCreateRequest": {
+                "properties": {
+                    "sales_order_id": {
+                        "type": "integer",
+                        "title": "Sales Order Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "sales_order_id"
+                ],
+                "title": "BillingCreateRequest",
+                "description": "Request payload for generating a billing record."
+            },
+            "CustomerResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "role": {
+                        "type": "string",
+                        "title": "Role"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "role"
+                ],
+                "title": "CustomerResponse",
+                "description": "Response payload describing a customer."
+            },
+            "DashboardSummaryResponse": {
+                "properties": {
+                    "total_orders": {
+                        "type": "integer",
+                        "title": "Total Orders"
+                    },
+                    "in_production": {
+                        "type": "integer",
+                        "title": "In Production"
+                    },
+                    "ready_for_delivery": {
+                        "type": "integer",
+                        "title": "Ready For Delivery"
+                    },
+                    "billed": {
+                        "type": "integer",
+                        "title": "Billed"
+                    },
+                    "top_products": {
+                        "items": {
+                            "$ref": "#/components/schemas/TopProductResponse"
+                        },
+                        "type": "array",
+                        "title": "Top Products"
+                    },
+                    "recent_orders": {
+                        "items": {
+                            "$ref": "#/components/schemas/RecentOrderResponse"
+                        },
+                        "type": "array",
+                        "title": "Recent Orders"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "total_orders",
+                    "in_production",
+                    "ready_for_delivery",
+                    "billed",
+                    "top_products",
+                    "recent_orders"
+                ],
+                "title": "DashboardSummaryResponse",
+                "description": "Response payload for dashboard summary."
+            },
+            "DeliveryCreateRequest": {
+                "properties": {
+                    "sales_order_id": {
+                        "type": "integer",
+                        "title": "Sales Order Id"
+                    },
+                    "delivery_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivery Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "sales_order_id"
+                ],
+                "title": "DeliveryCreateRequest",
+                "description": "Request payload for creating a delivery for a sales order."
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "OrderCreateRequest": {
+                "properties": {
+                    "customer_id": {
+                        "type": "integer",
+                        "title": "Customer Id"
+                    },
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/OrderItemPayload"
+                        },
+                        "type": "array",
+                        "title": "Items"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "customer_id",
+                    "items"
+                ],
+                "title": "OrderCreateRequest",
+                "description": "Request schema for creating a new sales order."
+            },
+            "OrderDetailResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "customer_id": {
+                        "type": "integer",
+                        "title": "Customer Id"
+                    },
+                    "customer_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Customer Name"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/SalesOrderStatus"
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "title": "Total Amount"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/OrderItemResponse"
+                        },
+                        "type": "array",
+                        "title": "Items"
+                    },
+                    "production_orders": {
+                        "items": {
+                            "$ref": "#/components/schemas/app__schemas__orders__ProductionOrderResponse"
+                        },
+                        "type": "array",
+                        "title": "Production Orders"
+                    },
+                    "deliveries": {
+                        "items": {
+                            "$ref": "#/components/schemas/app__schemas__orders__DeliveryResponse"
+                        },
+                        "type": "array",
+                        "title": "Deliveries"
+                    },
+                    "billing": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/app__schemas__orders__BillingResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "customer_id",
+                    "customer_name",
+                    "status",
+                    "total_amount",
+                    "created_at",
+                    "items",
+                    "production_orders",
+                    "deliveries"
+                ],
+                "title": "OrderDetailResponse",
+                "description": "Detailed response model for a sales order."
+            },
+            "OrderItemPayload": {
+                "properties": {
+                    "product_id": {
+                        "type": "integer",
+                        "title": "Product Id"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Quantity"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "product_id",
+                    "quantity"
+                ],
+                "title": "OrderItemPayload",
+                "description": "Request payload for an order item when creating orders."
+            },
+            "OrderItemResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "product_id": {
+                        "type": "integer",
+                        "title": "Product Id"
+                    },
+                    "product_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Product Name"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "title": "Quantity"
+                    },
+                    "subtotal": {
+                        "type": "number",
+                        "title": "Subtotal"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "product_id",
+                    "quantity",
+                    "subtotal"
+                ],
+                "title": "OrderItemResponse",
+                "description": "Response payload for an order item."
+            },
+            "OrderStatusUpdateRequest": {
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/SalesOrderStatus"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "status"
+                ],
+                "title": "OrderStatusUpdateRequest",
+                "description": "Request schema for updating the status of a sales order."
+            },
+            "OrderSummaryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "customer_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Customer Name"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/SalesOrderStatus"
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "title": "Total Amount"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "customer_name",
+                    "status",
+                    "total_amount",
+                    "created_at"
+                ],
+                "title": "OrderSummaryResponse",
+                "description": "Summary response for orders listing."
+            },
+            "ProductCreateRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "price": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Price"
+                    },
+                    "stock_qty": {
+                        "anyOf": [
+                            {
+                                "type": "integer",
+                                "minimum": 0.0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Stock Qty",
+                        "default": 0
+                    },
+                    "image_url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Image Url"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "description",
+                    "price"
+                ],
+                "title": "ProductCreateRequest",
+                "description": "Request payload for creating a new product."
+            },
+            "ProductResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "price": {
+                        "type": "number",
+                        "title": "Price"
+                    },
+                    "stock_qty": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Stock Qty",
+                        "default": 0
+                    },
+                    "image_url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Image Url"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "price"
+                ],
+                "title": "ProductResponse",
+                "description": "Response payload describing a product."
+            },
+            "ProductionOrderStartRequest": {
+                "properties": {
+                    "sales_order_id": {
+                        "type": "integer",
+                        "title": "Sales Order Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "sales_order_id"
+                ],
+                "title": "ProductionOrderStartRequest",
+                "description": "Request payload to start production for a sales order."
+            },
+            "RecentOrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "customer_name": {
+                        "type": "string",
+                        "title": "Customer Name"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "title": "Total Amount"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "customer_name",
+                    "status",
+                    "total_amount",
+                    "created_at"
+                ],
+                "title": "RecentOrderResponse",
+                "description": "Response payload for recent orders in dashboard."
+            },
+            "SalesOrderStatus": {
+                "type": "string",
+                "enum": [
+                    "created",
+                    "in_production",
+                    "ready_for_delivery",
+                    "delivered",
+                    "billed",
+                    "cancelled"
+                ],
+                "title": "SalesOrderStatus"
+            },
+            "SuccessResponse_BillingResponse_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/app__schemas__billings__BillingResponse"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[BillingResponse]"
+            },
+            "SuccessResponse_DashboardSummaryResponse_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/DashboardSummaryResponse"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[DashboardSummaryResponse]"
+            },
+            "SuccessResponse_DeliveryResponse_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/app__schemas__deliveries__DeliveryResponse"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[DeliveryResponse]"
+            },
+            "SuccessResponse_OrderDetailResponse_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/OrderDetailResponse"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[OrderDetailResponse]"
+            },
+            "SuccessResponse_ProductResponse_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ProductResponse"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[ProductResponse]"
+            },
+            "SuccessResponse_ProductionOrderResponse_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/app__schemas__production_orders__ProductionOrderResponse"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[ProductionOrderResponse]"
+            },
+            "SuccessResponse_dict_str__str__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[dict[str, str]]"
+            },
+            "SuccessResponse_list_BillingResponse__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/app__schemas__billings__BillingResponse"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[list[BillingResponse]]"
+            },
+            "SuccessResponse_list_CustomerResponse__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/CustomerResponse"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[list[CustomerResponse]]"
+            },
+            "SuccessResponse_list_DeliveryResponse__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/app__schemas__deliveries__DeliveryResponse"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[list[DeliveryResponse]]"
+            },
+            "SuccessResponse_list_OrderSummaryResponse__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/OrderSummaryResponse"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[list[OrderSummaryResponse]]"
+            },
+            "SuccessResponse_list_ProductResponse__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/ProductResponse"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[list[ProductResponse]]"
+            },
+            "SuccessResponse_list_ProductionOrderResponse__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "const": true,
+                        "title": "Success",
+                        "default": true
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/app__schemas__production_orders__ProductionOrderResponse"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data"
+                ],
+                "title": "SuccessResponse[list[ProductionOrderResponse]]"
+            },
+            "TopProductResponse": {
+                "properties": {
+                    "product_id": {
+                        "type": "integer",
+                        "title": "Product Id"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "orders": {
+                        "type": "integer",
+                        "title": "Orders"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "product_id",
+                    "name",
+                    "orders"
+                ],
+                "title": "TopProductResponse",
+                "description": "Response payload for top products in dashboard."
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            },
+            "app__schemas__billings__BillingResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "sales_order_id": {
+                        "type": "integer",
+                        "title": "Sales Order Id"
+                    },
+                    "invoice_number": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Invoice Number"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "billed_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Billed Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "sales_order_id",
+                    "amount"
+                ],
+                "title": "BillingResponse",
+                "description": "Response payload describing a billing entry."
+            },
+            "app__schemas__deliveries__DeliveryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "sales_order_id": {
+                        "type": "integer",
+                        "title": "Sales Order Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "delivery_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivery Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "sales_order_id",
+                    "status"
+                ],
+                "title": "DeliveryResponse",
+                "description": "Response payload describing a delivery entry."
+            },
+            "app__schemas__orders__BillingResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "invoice_number": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Invoice Number"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "billed_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Billed Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "amount"
+                ],
+                "title": "BillingResponse",
+                "description": "Response payload for billing information in the order details view."
+            },
+            "app__schemas__orders__DeliveryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "delivery_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Delivery Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "status"
+                ],
+                "title": "DeliveryResponse",
+                "description": "Response payload for delivery information in the order details view."
+            },
+            "app__schemas__orders__ProductionOrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "start_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Start Date"
+                    },
+                    "end_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "End Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "status"
+                ],
+                "title": "ProductionOrderResponse",
+                "description": "Response payload for a production order in the order details view."
+            },
+            "app__schemas__production_orders__ProductionOrderResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "sales_order_id": {
+                        "type": "integer",
+                        "title": "Sales Order Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "start_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Start Date"
+                    },
+                    "end_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "End Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "sales_order_id",
+                    "status"
+                ],
+                "title": "ProductionOrderResponse",
+                "description": "Response model describing a production order."
+            }
+        }
+    }
+}
