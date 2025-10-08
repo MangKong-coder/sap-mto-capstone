@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache"
 import { createBilling, getBillings, sendInvoice } from "@/lib/dal/billings"
 import { updateDeliveryStatus, getDeliveries } from "@/lib/dal/deliveries"
 import { updateProductionStatus, getProductionOrders } from "@/lib/dal/production-orders"
+import { toast } from "sonner"
 
 /**
  * Create a billing for a sales order
@@ -71,12 +72,9 @@ export async function sendInvoiceAction(formData: FormData) {
   try {
     await sendInvoice(salesOrderId)
     revalidatePath("/admin/billings")
-    return { success: true, message: "Invoice sent successfully" }
+    toast.success("Invoice sent successfully")
   } catch (error) {
     console.error("Failed to send invoice:", error)
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to send invoice"
-    }
+    toast.error("Failed to send invoice")
   }
 }
