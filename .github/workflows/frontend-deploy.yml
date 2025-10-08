@@ -30,7 +30,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/frontend:latest
+          tags: ghcr.io/${{ github.repository_owner | lowercase }}/frontend:latest
 
       - name: SSH into droplet and deploy frontend
         uses: appleboy/ssh-action@v1.1.0
