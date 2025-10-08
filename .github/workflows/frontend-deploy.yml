@@ -30,6 +30,11 @@ jobs:
         env:
           OWNER: ${{ github.repository_owner }}
 
+      - name: Create environment file
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }}" > frontend/.env.local
+          echo "Environment file created with API URL"
+
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
