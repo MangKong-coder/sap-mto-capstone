@@ -23,6 +23,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
+        env:
+          OWNER: ${{ github.repository_owner }}
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -30,7 +36,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ toLower(github.repository_owner) }}/frontend:latest
+          tags: ghcr.io/${{ env.OWNER_LC }}/frontend:latest
 
       - name: SSH into droplet and deploy frontend
         uses: appleboy/ssh-action@v1.1.0
