@@ -58,7 +58,7 @@ export default async function DeliveriesPage() {
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Delivery ID</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Sales Order</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Order Status</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Total Amount</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Total Amount</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Delivery Date</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
                   <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
@@ -97,7 +97,7 @@ export default async function DeliveriesPage() {
                             {order?.status.replace(/_/g, " ") || "Unknown"}
                           </Badge>
                         </td>
-                        <td className="py-4 text-right text-sm text-zinc-900">
+                        <td className="py-4 text-sm text-zinc-900">
                           ₱{order?.total_amount.toFixed(2) || "0.00"}
                         </td>
                         <td className="py-4 text-sm text-zinc-600">
@@ -108,7 +108,7 @@ export default async function DeliveriesPage() {
                             {delivery.status}
                           </Badge>
                         </td>
-                        <td className="py-4 text-right">
+                        <td className="py-4">
                           <div className="flex justify-end gap-2">
                             {delivery.status === DeliveryStatus.PENDING &&
                               order?.status === SalesOrderStatus.READY_FOR_DELIVERY && (

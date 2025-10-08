@@ -50,7 +50,7 @@ export default async function BillingsPage() {
                   <tr className="border-b border-zinc-200">
                     <th className="pb-3 text-left text-sm font-medium text-zinc-600">Order ID</th>
                     <th className="pb-3 text-left text-sm font-medium text-zinc-600">Customer</th>
-                    <th className="pb-3 text-right text-sm font-medium text-zinc-600">Amount</th>
+                    <th className="pb-3 text-left text-sm font-medium text-zinc-600">Amount</th>
                     <th className="pb-3 text-left text-sm font-medium text-zinc-600">Delivered Date</th>
                     <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
                   </tr>
@@ -64,7 +64,7 @@ export default async function BillingsPage() {
                         </Link>
                       </td>
                       <td className="py-4 text-sm text-zinc-700">{order.customer_name || `Customer ${order.customer_id}`}</td>
-                      <td className="py-4 text-right text-sm font-medium text-zinc-900">
+                      <td className="py-4 text-left text-sm font-medium text-zinc-900">
                         ₱{order.total_amount.toFixed(2)}
                       </td>
                       <td className="py-4 text-sm text-zinc-600">
@@ -105,7 +105,7 @@ export default async function BillingsPage() {
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Billing ID</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Sales Order</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Invoice Number</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Amount</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Amount</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Billing Date</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
                 </tr>
@@ -132,7 +132,7 @@ export default async function BillingsPage() {
                           </Link>
                         </td>
                         <td className="py-4 text-sm text-zinc-700">{billing.invoice_number || "N/A"}</td>
-                        <td className="py-4 text-right text-sm font-medium text-zinc-900">₱{billing.amount.toFixed(2)}</td>
+                        <td className="py-4 text-left text-sm font-medium text-zinc-900">₱{billing.amount.toFixed(2)}</td>
                         <td className="py-4 text-sm text-zinc-600">
                           {billing.billed_date ? new Date(billing.billed_date).toLocaleDateString() : "-"}
                         </td>

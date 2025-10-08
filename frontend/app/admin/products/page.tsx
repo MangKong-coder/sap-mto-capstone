@@ -42,8 +42,8 @@ async function ProductsTable() {
                 <tr className="border-b border-zinc-200">
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Product</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Description</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Price</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Stock</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Price</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Stock</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
                   <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
                 </tr>
@@ -73,8 +73,8 @@ async function ProductsTable() {
                         </div>
                       </td>
                       <td className="py-4 text-sm text-zinc-600">{product.description}</td>
-                      <td className="py-4 text-right text-sm font-medium text-zinc-900">₱{product.price.toFixed(2)}</td>
-                      <td className="py-4 text-right text-sm text-zinc-700">{product.stock_qty || 0}</td>
+                      <td className="py-4 text-left text-sm font-medium text-zinc-900">₱{product.price.toFixed(2)}</td>
+                      <td className="py-4 text-left text-sm text-zinc-700">{product.stock_qty || 0}</td>
                       <td className="py-4">
                         <Badge
                           variant="secondary"

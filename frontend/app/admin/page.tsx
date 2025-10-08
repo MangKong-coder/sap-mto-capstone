@@ -150,7 +150,7 @@ export default async function AdminDashboard() {
                 <tr className="border-b border-zinc-200">
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Order ID</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Customer</th>
-                  <th className="pb-3 text-right text-sm font-medium text-zinc-600">Total</th>
+                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Total</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
                 </tr>
               </thead>
@@ -167,7 +167,7 @@ export default async function AdminDashboard() {
                     <td className="py-3 text-sm text-zinc-900">#{order.id}</td>
                     <td className="py-3 text-sm text-zinc-700">{order.customer_name}</td>
                     <td className="py-3 text-sm text-zinc-600">{order.created_at.toLocaleDateString()}</td>
-                    <td className="py-3 text-right text-sm text-zinc-900">₱{order.total_amount.toFixed(2)}</td>
+                    <td className="py-3 text-left text-sm text-zinc-900">₱{order.total_amount.toFixed(2)}</td>
                     <td className="py-3">
                       <Badge
                         variant="secondary"
