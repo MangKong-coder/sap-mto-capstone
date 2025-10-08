@@ -38,7 +38,6 @@ def create_product(
         product = product_service.create_product_with_stock(
             session,
             request.model_dump(),
-            request.stock_qty,
         )
         return SuccessResponse(data=product)
     except Exception as e:

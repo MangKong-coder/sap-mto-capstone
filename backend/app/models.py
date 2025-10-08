@@ -45,7 +45,6 @@ class Product(SQLModel, table=True):
     name: str
     description: str
     price: float
-    stock_qty: Optional[int] = 0
     image_url: Optional[str] = None
 
 # --- Sales Orders ---

@@ -49,7 +49,6 @@ export function CartItemList() {
                       size="icon"
                       className="h-8 w-8 bg-transparent"
                       onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                      disabled={item.quantity >= item.product.stock_qty}
                     >
                       <Plus className="h-3 w-3" />
                     </Button>

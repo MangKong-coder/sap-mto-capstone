@@ -32,7 +32,6 @@ export interface Product {
   name: string
   description: string
   price: number
-  stock_qty: number
   image_url: string | null
 }
 

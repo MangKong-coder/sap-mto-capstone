@@ -20,7 +20,6 @@ export const ProductSchema = z.object({
   name: z.string(),
   description: z.string(),
   price: z.number(),
-  stock_qty: z.number().nullable(),
   image_url: z.string().nullable()
 })
 
@@ -31,7 +30,6 @@ export const ProductCreateRequestSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Product description is required"),
   price: z.number().min(0.01, "Price must be greater than 0"),
-  stock_qty: z.number().min(0, "Stock quantity must be 0 or greater").default(0),
   image_url: z.string().url("Invalid image URL").optional().or(z.literal(""))
 })
 
@@ -42,7 +40,6 @@ export const ProductUpdateRequestSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Product description is required"),
   price: z.number().min(0.01, "Price must be greater than 0"),
-  stock_qty: z.number().min(0, "Stock quantity must be 0 or greater"),
   image_url: z.string().url("Invalid image URL").optional().or(z.literal(""))
 })
 export async function getProducts(search?: string): Promise<Product[]> {
@@ -80,7 +77,6 @@ export async function getProducts(search?: string): Promise<Product[]> {
       name: product.name,
       description: product.description,
       price: product.price,
-      stock_qty: product.stock_qty ?? 0, // Convert null to 0 for our interface
       image_url: product.image_url
     }))
 
@@ -136,8 +132,7 @@ export async function getProductById(productId: number): Promise<Product> {
       name: apiResponse.data.name,
       description: apiResponse.data.description,
       price: apiResponse.data.price,
-      stock_qty: apiResponse.data.stock_qty ?? 0, // Convert null to 0 for our interface
-      image_url: apiResponse.data.image_url
+    image_url: apiResponse.data.image_url
     }
 
     return product
@@ -163,8 +158,7 @@ export async function createProduct(productData: {
   name: string
   description: string
   price: number
-  stock_qty?: number
-  image_url?: string
+image_url?: string
 }): Promise<Product> {
   try {
     // Validate the input data using Zod
@@ -200,8 +194,7 @@ export async function createProduct(productData: {
       name: apiResponse.data.name,
       description: apiResponse.data.description,
       price: apiResponse.data.price,
-      stock_qty: apiResponse.data.stock_qty ?? 0, // Convert null to 0 for our interface
-      image_url: apiResponse.data.image_url
+    image_url: apiResponse.data.image_url
     }
 
     return product
@@ -227,8 +220,7 @@ export async function updateProduct(productId: number, productData: {
   name: string
   description: string
   price: number
-  stock_qty: number
-  image_url?: string
+image_url?: string
 }): Promise<Product> {
   try {
     // Validate the input data using Zod
@@ -267,8 +259,7 @@ export async function updateProduct(productId: number, productData: {
       name: apiResponse.data.name,
       description: apiResponse.data.description,
       price: apiResponse.data.price,
-      stock_qty: apiResponse.data.stock_qty ?? 0, // Convert null to 0 for our interface
-      image_url: apiResponse.data.image_url
+    image_url: apiResponse.data.image_url
     }
 
     return product

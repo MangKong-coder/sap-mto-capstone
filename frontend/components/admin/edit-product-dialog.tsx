@@ -98,19 +98,6 @@ export function EditProductDialog({ product, children }: EditProductDialogProps)
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="stock_qty">Stock Quantity</Label>
-              <Input
-                id="stock_qty"
-                name="stock_qty"
-                type="number"
-                min="0"
-                defaultValue={product.stock_qty}
-                placeholder="0"
-                disabled={isPending}
-              />
-            </div>
-
-            <div className="grid gap-2">
               <Label htmlFor="image_url">Image URL (Optional)</Label>
               <Input
                 id="image_url"

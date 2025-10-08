@@ -45,7 +45,7 @@ def create_product_with_stock(
         payload["stock_qty"] = stock_qty
 
     product = product_repo.create(session, payload)
-    logger.info("Created product %s with stock %s", product.id, product.stock_qty)
+    logger.info("Created product %s", product.id)
     return product
 
 

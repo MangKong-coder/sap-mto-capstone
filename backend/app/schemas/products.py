@@ -13,7 +13,6 @@ class ProductCreateRequest(BaseModel):
     name: str
     description: str
     price: float = Field(gt=0)
-    stock_qty: Optional[int] = Field(default=0, ge=0)
     image_url: Optional[str] = None
 
 
@@ -24,7 +23,6 @@ class ProductResponse(BaseModel):
     name: str
     description: str
     price: float
-    stock_qty: int = 0
     image_url: Optional[str] = None
 
 class ProductUpdateRequest(BaseModel):
@@ -33,5 +31,4 @@ class ProductUpdateRequest(BaseModel):
     name: str
     description: str
     price: float = Field(gt=0)
-    stock_qty: int = Field(ge=0)
     image_url: Optional[str] = None

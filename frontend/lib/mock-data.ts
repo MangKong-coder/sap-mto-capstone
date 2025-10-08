@@ -17,7 +17,6 @@ export const mockProducts: Product[] = [
     name: "Mapúa Cardinals T-Shirt",
     description: "Official Mapúa Cardinals athletic t-shirt in cardinal red with university logo",
     price: 450,
-    stock_qty: 100,
     image_url: "/red-university-tshirt-with-cardinal-logo.jpg",
   },
   {
@@ -25,7 +24,6 @@ export const mockProducts: Product[] = [
     name: "Mapúa Hoodie",
     description: "Premium quality hoodie with embroidered Mapúa University seal",
     price: 1200,
-    stock_qty: 50,
     image_url: "/gray-university-hoodie-with-embroidered-seal.jpg",
   },
   {
@@ -33,7 +31,6 @@ export const mockProducts: Product[] = [
     name: "Engineering Notebook",
     description: "Professional engineering notebook with Mapúa branding, grid pages",
     price: 180,
-    stock_qty: 200,
     image_url: "/engineering-notebook-with-grid-pages.jpg",
   },
   {
@@ -41,7 +38,6 @@ export const mockProducts: Product[] = [
     name: "Mapúa Baseball Cap",
     description: "Adjustable baseball cap with embroidered Cardinals logo",
     price: 350,
-    stock_qty: 75,
     image_url: "/red-baseball-cap-with-university-logo.jpg",
   },
   {
@@ -49,7 +45,6 @@ export const mockProducts: Product[] = [
     name: "University Lanyard",
     description: "Official Mapúa ID lanyard with detachable buckle",
     price: 120,
-    stock_qty: 300,
     image_url: "/red-university-lanyard.jpg",
   },
   {
@@ -57,7 +52,6 @@ export const mockProducts: Product[] = [
     name: "Mapúa Tumbler",
     description: "Insulated stainless steel tumbler with university branding, 500ml",
     price: 550,
-    stock_qty: 80,
     image_url: "/stainless-steel-tumbler-with-university-logo.jpg",
   },
   {
@@ -65,7 +59,6 @@ export const mockProducts: Product[] = [
     name: "Cardinals Polo Shirt",
     description: "Professional polo shirt with Mapúa emblem, perfect for faculty",
     price: 650,
-    stock_qty: 60,
     image_url: "/white-polo-shirt-with-university-emblem.jpg",
   },
   {
@@ -73,7 +66,6 @@ export const mockProducts: Product[] = [
     name: "Mapúa Tote Bag",
     description: "Durable canvas tote bag with Cardinals print",
     price: 280,
-    stock_qty: 120,
     image_url: "/canvas-tote-bag-with-university-print.jpg",
   },
 ]

@@ -84,18 +84,6 @@ export function CreateProductDialog() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="stock_qty">Initial Stock Quantity</Label>
-              <Input
-                id="stock_qty"
-                name="stock_qty"
-                type="number"
-                min="0"
-                placeholder="0"
-                disabled={isPending}
-              />
-            </div>
-
-            <div className="grid gap-2">
               <Label htmlFor="image_url">Image URL (Optional)</Label>
               <Input
                 id="image_url"

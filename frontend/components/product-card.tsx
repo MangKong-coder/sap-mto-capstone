@@ -32,11 +32,6 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             className="object-cover transition-transform group-hover:scale-105"
           />
-          {product.stock_qty > 0 && product.stock_qty < 20 && (
-            <Badge variant="secondary" className="absolute right-2 top-2">
-              Low Stock
-            </Badge>
-          )}
         </div>
       </CardHeader>
       <CardContent className="p-4">
@@ -44,13 +39,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <p className="mt-2 text-muted-foreground text-sm line-clamp-2 text-pretty">{product.description}</p>
         <div className="mt-3 flex items-center justify-between">
           <span className="font-bold text-2xl text-primary">₱{product.price.toFixed(2)}</span>
-          <span className="text-muted-foreground text-sm">{product.stock_qty} in stock</span>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button onClick={handleAddToCart} className="w-full" disabled={product.stock_qty === 0}>
+        <Button onClick={handleAddToCart} className="w-full">
           <ShoppingCart className="mr-2 h-4 w-4" />
-          {product.stock_qty === 0 ? "Out of Stock" : "Add to Cart"}
+          Add to Cart
         </Button>
       </CardFooter>
     </Card>

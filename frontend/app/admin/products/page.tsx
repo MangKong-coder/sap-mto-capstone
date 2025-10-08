@@ -45,15 +45,13 @@ async function ProductsTable() {
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Product</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Description</th>
                   <th className="pb-3 text-left text-sm font-medium text-zinc-600">Price</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Stock</th>
-                  <th className="pb-3 text-left text-sm font-medium text-zinc-600">Status</th>
                   <th className="pb-3 text-right text-sm font-medium text-zinc-600">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-6 text-center text-sm text-zinc-500">
+                    <td colSpan={4} className="py-6 text-center text-sm text-zinc-500">
                       No products available.
                     </td>
                   </tr>
@@ -76,21 +74,6 @@ async function ProductsTable() {
                       </td>
                       <td className="py-4 text-sm text-zinc-600">{product.description}</td>
                       <td className="py-4 text-left text-sm font-medium text-zinc-900">₱{product.price.toFixed(2)}</td>
-                      <td className="py-4 text-left text-sm text-zinc-700">{product.stock_qty || 0}</td>
-                      <td className="py-4">
-                        <Badge
-                          variant="secondary"
-                          className={
-                            (product.stock_qty || 0) > 10
-                              ? "bg-green-500/10 text-green-500"
-                              : (product.stock_qty || 0) > 0
-                                ? "bg-yellow-500/10 text-yellow-500"
-                                : "bg-red-500/10 text-red-500"
-                          }
-                        >
-                          {(product.stock_qty || 0) > 10 ? "In Stock" : (product.stock_qty || 0) > 0 ? "Low Stock" : "Out of Stock"}
-                        </Badge>
-                      </td>
                       <td className="py-4 text-right">
                         <div className="flex justify-end gap-2">
                           <EditProductDialog product={product} />
