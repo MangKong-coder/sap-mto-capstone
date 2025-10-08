@@ -35,13 +35,16 @@ export const ProductCreateRequestSchema = z.object({
   image_url: z.string().url("Invalid image URL").optional().or(z.literal(""))
 })
 
-
 /**
- * Fetch all products from the API
- * @param search - Optional search query to filter products by name
- * @returns Promise resolving to array of products
- * @throws Error if API request fails or returns invalid response
+ * Zod schema for Product update request
  */
+export const ProductUpdateRequestSchema = z.object({
+  name: z.string().min(1, "Product name is required"),
+  description: z.string().min(1, "Product description is required"),
+  price: z.number().min(0.01, "Price must be greater than 0"),
+  stock_qty: z.number().min(0, "Stock quantity must be 0 or greater"),
+  image_url: z.string().url("Invalid image URL").optional().or(z.literal(""))
+})
 export async function getProducts(search?: string): Promise<Product[]> {
   try {
     const baseUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL
@@ -210,5 +213,108 @@ export async function createProduct(productData: {
 
     console.error('Failed to create product:', error)
     throw new Error(`Failed to create product: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
+}
+
+/**
+ * Update an existing product
+ * @param productId - The product ID to update
+ * @param productData - Updated product data
+ * @returns Promise resolving to the updated product
+ * @throws Error if API request fails or returns invalid response
+ */
+export async function updateProduct(productId: number, productData: {
+  name: string
+  description: string
+  price: number
+  stock_qty: number
+  image_url?: string
+}): Promise<Product> {
+  try {
+    // Validate the input data using Zod
+    const validatedData = ProductUpdateRequestSchema.parse(productData)
+
+    const baseUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL
+    if (!baseUrl) {
+      throw new Error("BACKEND_API_URL or NEXT_PUBLIC_API_URL is not configured")
+    }
+
+    const response = await fetch(`${baseUrl}/api/products/${productId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(validatedData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      if (response.status === 404) {
+        throw new Error(`Product with ID ${productId} not found`)
+      }
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    const rawData = await response.json()
+
+    // Validate the API response structure using Zod
+    const apiResponseSchema = ApiResponseSchema(ProductSchema)
+    const apiResponse = apiResponseSchema.parse(rawData)
+
+    // Transform the validated data to match our Product interface
+    const product: Product = {
+      id: apiResponse.data.id,
+      name: apiResponse.data.name,
+      description: apiResponse.data.description,
+      price: apiResponse.data.price,
+      stock_qty: apiResponse.data.stock_qty ?? 0, // Convert null to 0 for our interface
+      image_url: apiResponse.data.image_url
+    }
+
+    return product
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('Product update validation failed:', error.errors)
+      throw new Error(`Invalid product data: ${error.message}`)
+    }
+
+    console.error('Failed to update product:', error)
+    throw new Error(`Failed to update product: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
+}
+
+
+/**
+ * Delete a product by ID
+ * @param productId - The product ID to delete
+ * @returns Promise resolving to void
+ * @throws Error if API request fails or product not found
+ */
+export async function deleteProduct(productId: number): Promise<void> {
+  try {
+    const baseUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL
+    if (!baseUrl) {
+      throw new Error("BACKEND_API_URL or NEXT_PUBLIC_API_URL is not configured")
+    }
+
+    const response = await fetch(`${baseUrl}/api/products/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(`Product with ID ${productId} not found`)
+      }
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    // No response body expected for DELETE
+  } catch (error) {
+    console.error(`Failed to delete product ${productId}:`, error)
+    throw new Error(`Failed to delete product: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }

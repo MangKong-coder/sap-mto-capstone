@@ -49,21 +49,21 @@ def create_product_with_stock(
     return product
 
 
-def restock_product(session: Session, product_id: int, quantity: int) -> Product:
-    """Increase the stock level for a product by the specified quantity."""
+def get_product(session: Session, product_id: int) -> Product:
+    """Retrieve a single product by ID."""
+    return product_repo.get_or_raise(session, product_id)
 
-    if quantity <= 0:
-        raise ValueError("quantity must be greater than zero")
 
+def update_product(session: Session, product_id: int, product_data: Mapping[str, Any]) -> Product:
+    """Update an existing product with new data."""
     product = product_repo.get_or_raise(session, product_id)
-    current_stock = product.stock_qty or 0
-    new_stock = current_stock + quantity
-
-    updated = product_repo.update(session, product_id, {"stock_qty": new_stock})
-    logger.info(
-        "Product %s restocked from %s to %s",
-        product_id,
-        current_stock,
-        new_stock,
-    )
+    updated = product_repo.update(session, product_id, product_data)
+    logger.info("Updated product %s", product_id)
     return updated
+
+
+def delete_product(session: Session, product_id: int) -> None:
+    """Delete a product by ID."""
+    product = product_repo.get_or_raise(session, product_id)
+    product_repo.delete(session, product_id)
+    logger.info("Deleted product %s", product_id)

@@ -24,5 +24,14 @@ class ProductResponse(BaseModel):
     name: str
     description: str
     price: float
-    stock_qty: Optional[int] = 0
+    stock_qty: int = 0
+    image_url: Optional[str] = None
+
+class ProductUpdateRequest(BaseModel):
+    """Request payload for updating an existing product."""
+
+    name: str
+    description: str
+    price: float = Field(gt=0)
+    stock_qty: int = Field(ge=0)
     image_url: Optional[str] = None

@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { Edit, Trash2, Package } from "lucide-react"
 import Image from "next/image"
 import { CreateProductDialog } from "@/components/admin/create-product-dialog"
+import { EditProductDialog } from "@/components/admin/edit-product-dialog"
+import { DeleteProductDialog } from "@/components/admin/delete-product-dialog"
 import { Product } from "@/lib/types"
 
 export default function ProductsPage() {
@@ -91,20 +93,8 @@ async function ProductsTable() {
                       </td>
                       <td className="py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-zinc-300 text-zinc-700 hover:bg-zinc-100 bg-transparent"
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-zinc-300 text-red-500 hover:bg-zinc-100"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                          <EditProductDialog product={product} />
+                          <DeleteProductDialog product={product} />
                         </div>
                       </td>
                     </tr>
