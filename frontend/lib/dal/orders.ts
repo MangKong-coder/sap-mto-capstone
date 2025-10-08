@@ -131,7 +131,8 @@ export async function getOrders(
     const url = `${assertApiBase()}/api/orders${searchParams.toString() ? `?${searchParams.toString()}` : ""}`
 
     const response = await fetch(url, {
-      cache: "no-store",
+      // Use ISR-friendly caching for build-time generation
+      next: { revalidate: 300, tags: ['orders-list'] },
       ...fetchOptions,
       method: fetchOptions.method ?? "GET",
       headers: buildHeaders(fetchOptions.headers, {
@@ -209,7 +210,8 @@ export async function getOrderDetail(orderId: number): Promise<OrderDetail> {
       headers: buildHeaders(undefined, {
         "Content-Type": "application/json",
       }),
-      cache: "no-store",
+      // Use ISR-friendly caching instead of no-store
+      next: { revalidate: 300, tags: [`order-${orderId}`, 'orders'] }
     })
 
     if (!response.ok) {

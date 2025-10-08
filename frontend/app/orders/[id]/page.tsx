@@ -5,11 +5,33 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { getOrderDetail } from "@/lib/dal/orders"
+import { getOrderDetail, getOrders } from "@/lib/dal/orders"
 import { SalesOrderStatus } from "@/lib/types"
 
 interface PageProps {
   params: Promise<{ id: string }>
+}
+
+// Next.js will invalidate the cache when a
+// request comes in, at most once every 5 minutes.
+export const revalidate = 300
+
+export async function generateStaticParams() {
+  // Pre-generate the first 10 orders at build time
+  // This is a reasonable subset for ISR
+  try {
+    // During build time, if backend is not available, return empty array
+    // Pages will be generated on-demand when first requested
+    const orders = await getOrders()
+
+    return orders.slice(0, 10).map((order) => ({
+      id: String(order.id),
+    }))
+  } catch (error) {
+    console.warn('Backend not available during build, using fallback for ISR:', error)
+    // Return empty array to allow ISR to work with on-demand generation
+    return []
+  }
 }
 
 export default async function OrderDetailsPage({ params }: PageProps) {
