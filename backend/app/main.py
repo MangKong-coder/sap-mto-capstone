@@ -5,6 +5,7 @@ from app.database import init_db
 from . import models
 from app.api import orders, production_orders, deliveries, billings, products, customers, dashboard
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from dotenv import load_dotenv  
 
@@ -22,12 +23,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Mapúa MTO Backend", lifespan=lifespan)
 
+load_dotenv()
+APP_URL = os.environ.get("PUBLIC_APP_URL")
+
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:3000"
+    APP_URL
 ]
 
 app.add_middleware(
