@@ -36,7 +36,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/frontend:latest
+          tags: ghcr.io/${{ env.OWNER_LC }}/sap-mto-capstone-frontend:latest
 
       - name: SSH into droplet and deploy frontend
         uses: appleboy/ssh-action@v1.1.0
