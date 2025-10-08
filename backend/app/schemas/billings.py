@@ -14,6 +14,12 @@ class BillingCreateRequest(BaseModel):
     sales_order_id: int
 
 
+class BillingSendInvoiceRequest(BaseModel):
+    """Request payload for generating a billing record and emailing the invoice."""
+
+    sales_order_id: int
+
+
 class BillingResponse(BaseModel):
     """Response payload describing a billing entry."""
 

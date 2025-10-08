@@ -39,7 +39,7 @@ export type {
 } from './orders'
 
 // Billings domain
-export { getBillings, createBilling, BillingSchema } from './billings'
+export { getBillings, createBilling, sendInvoice, BillingSchema } from './billings'
 
 export type { Billing } from './billings'
 

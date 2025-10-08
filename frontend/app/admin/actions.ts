@@ -5,7 +5,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { createBilling, getBillings } from "@/lib/dal/billings"
+import { createBilling, getBillings, sendInvoice } from "@/lib/dal/billings"
 import { updateDeliveryStatus, getDeliveries } from "@/lib/dal/deliveries"
 import { updateProductionStatus, getProductionOrders } from "@/lib/dal/production-orders"
 
@@ -56,6 +56,27 @@ export async function updateProductionStatusAction(productionId: number, status:
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to update production status"
+    }
+  }
+}
+
+/**
+ * Send invoice email for a sales order
+ */
+export async function sendInvoiceAction(formData: FormData) {
+  const salesOrderId = Number(formData.get("salesOrderId"))
+  if (!Number.isFinite(salesOrderId)) {
+    throw new Error("salesOrderId is required to send invoice")
+  }
+  try {
+    await sendInvoice(salesOrderId)
+    revalidatePath("/admin/billings")
+    return { success: true, message: "Invoice sent successfully" }
+  } catch (error) {
+    console.error("Failed to send invoice:", error)
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to send invoice"
     }
   }
 }

@@ -1,10 +1,10 @@
 import { getOrders, getBillings, type OrderSummary, type Billing } from "@/lib/dal"
-import { createBillingAction } from "@/app/admin/actions"
+import { createBillingAction, sendInvoiceAction } from "@/app/admin/actions"
 import { SalesOrderStatus } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText } from "lucide-react"
+import { Send, FileText } from "lucide-react"
 import Link from "next/link"
 
 export default async function BillingsPage() {
@@ -71,17 +71,30 @@ export default async function BillingsPage() {
                         {order.created_at ? new Date(order.created_at).toLocaleDateString() : "-"}
                       </td>
                       <td className="py-4 text-right">
-                        <form action={createBillingAction}>
-                          <input type="hidden" name="salesOrderId" value={order.id} />
-                          <Button
-                            size="sm"
-                            type="submit"
-                            className="bg-green-500 text-white hover:bg-green-600"
-                          >
-                            <FileText className="mr-1 h-3 w-3" />
-                            Generate Invoice
-                          </Button>
-                        </form>
+                        <div className="flex gap-2 justify-end">
+                          <form action={createBillingAction}>
+                            <input type="hidden" name="salesOrderId" value={order.id} />
+                            <Button
+                              size="sm"
+                              type="submit"
+                              className="bg-green-500 text-white hover:bg-green-600"
+                            >
+                              <FileText className="mr-1 h-3 w-3" />
+                              Generate
+                            </Button>
+                          </form>
+                          <form action={sendInvoiceAction}>
+                            <input type="hidden" name="salesOrderId" value={order.id} />
+                            <Button
+                              size="sm"
+                              type="submit"
+                              className="bg-blue-500 text-white hover:bg-blue-600"
+                            >
+                              <Send className="mr-1 h-3 w-3" />
+                              Send Invoice
+                            </Button>
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   ))}

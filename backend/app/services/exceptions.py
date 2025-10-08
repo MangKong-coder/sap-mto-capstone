@@ -19,3 +19,10 @@ class InvalidTransitionError(ServiceError):
         self.entity_name = entity_name
         self.current_status = current_status
         self.target_status = target_status
+
+
+class EmailDeliveryError(ServiceError):
+    """Raised when an outbound email fails to send."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)

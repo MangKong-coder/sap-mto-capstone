@@ -6,9 +6,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
 from app.database import get_session
-from app.schemas.billings import BillingCreateRequest, BillingResponse
+from app.schemas.billings import (
+    BillingCreateRequest,
+    BillingResponse,
+    BillingSendInvoiceRequest,
+)
 from app.schemas.common import SuccessResponse
 from app.services import billing_service
+from app.services.exceptions import EmailDeliveryError
 
 router = APIRouter(prefix="/api/billings", tags=["Billings"], redirect_slashes=False)
 
@@ -57,5 +62,26 @@ def generate_billing(
         return SuccessResponse(data=billing)
     except billing_service.InvalidTransitionError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/send-invoice", response_model=SuccessResponse[BillingResponse])
+def generate_billing_and_send_invoice(
+    request: BillingSendInvoiceRequest,
+    session: Session = Depends(get_session),
+) -> SuccessResponse[BillingResponse]:
+    """Generate a billing invoice and email it to the customer."""
+
+    try:
+        billing = billing_service.generate_billing_and_send_invoice(
+            session,
+            request.sales_order_id,
+        )
+        return SuccessResponse(data=billing)
+    except billing_service.InvalidTransitionError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except EmailDeliveryError as e:
+        raise HTTPException(status_code=502, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
