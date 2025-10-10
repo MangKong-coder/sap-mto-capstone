@@ -31,15 +31,33 @@ export default function OrdersTable({ initialOrders, initialError = null }: Orde
   const [pendingActions, setPendingActions] = useState<Set<number>>(new Set())
   const [isPending, startTransition] = useTransition()
 
-  // Filter orders based on search term
-  const filteredOrders = initialOrders.filter((order) => {
-    const query = searchTerm.trim().toLowerCase()
-    if (!query) return true
+  // Helper function to check if an order needs action
+  const needsAction = (order: OrderSummary): boolean => {
+    return order.status === SalesOrderStatus.CREATED || 
+           order.status === SalesOrderStatus.IN_PRODUCTION
+  }
 
-    const idMatches = order.id.toString().includes(query)
-    const nameMatches = (order.customer_name ?? "").toLowerCase().includes(query)
-    return idMatches || nameMatches
-  })
+  // Filter and sort orders based on search term
+  const filteredOrders = initialOrders
+    .filter((order) => {
+      const query = searchTerm.trim().toLowerCase()
+      if (!query) return true
+
+      const idMatches = order.id.toString().includes(query)
+      const nameMatches = (order.customer_name ?? "").toLowerCase().includes(query)
+      return idMatches || nameMatches
+    })
+    .sort((a, b) => {
+      // Orders that need action come first
+      const aNeedsAction = needsAction(a)
+      const bNeedsAction = needsAction(b)
+      
+      if (aNeedsAction && !bNeedsAction) return -1
+      if (!aNeedsAction && bNeedsAction) return 1
+      
+      // Within the same category, sort by ID ascending
+      return a.id - b.id
+    })
 
   const handleStartProduction = async (orderId: number) => {
     setPendingActions(prev => new Set(prev).add(orderId))

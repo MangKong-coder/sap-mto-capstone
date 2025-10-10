@@ -56,7 +56,9 @@ async function ProductsTable() {
                     </td>
                   </tr>
                 ) : (
-                  products.map((product: Product) => (
+                  products
+                    .sort((a, b) => a.id - b.id)
+                    .map((product: Product) => (
                     <tr key={product.id} className="border-b border-zinc-100">
                       <td className="py-4">
                         <div className="flex items-center gap-3">

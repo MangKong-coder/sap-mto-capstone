@@ -68,7 +68,7 @@ export default async function OrdersPage() {
 
       <div className="space-y-4">
         {orders
-          .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
+          .sort((a, b) => a.id - b.id)
           .map((order) => (
             <Card key={order.id} className="transition-shadow hover:shadow-md">
               <CardContent className="p-6">

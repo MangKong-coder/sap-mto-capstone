@@ -72,7 +72,24 @@ export default async function DeliveriesPage() {
                     </td>
                   </tr>
                 ) : (
-                  deliveries.map((delivery: Delivery) => {
+                  deliveries
+                    .sort((a, b) => {
+                      // Deliveries that need action come first
+                      const orderA = getOrderDetails(a.sales_order_id)
+                      const orderB = getOrderDetails(b.sales_order_id)
+                      
+                      const aNeedsAction = a.status === DeliveryStatus.PENDING && 
+                                          orderA?.status === SalesOrderStatus.READY_FOR_DELIVERY
+                      const bNeedsAction = b.status === DeliveryStatus.PENDING && 
+                                          orderB?.status === SalesOrderStatus.READY_FOR_DELIVERY
+                      
+                      if (aNeedsAction && !bNeedsAction) return -1
+                      if (!aNeedsAction && bNeedsAction) return 1
+                      
+                      // Within same category, sort by ID ascending
+                      return a.id - b.id
+                    })
+                    .map((delivery: Delivery) => {
                     const order = getOrderDetails(delivery.sales_order_id)
                     return (
                       <tr key={delivery.id} className="border-b border-zinc-100">

@@ -74,7 +74,19 @@ export default async function ProductionOrdersPage() {
                     </td>
                   </tr>
                 ) : (
-                  productionOrders.map((po: ProductionOrder) => {
+                  productionOrders
+                    .sort((a, b) => {
+                      // Orders that need action come first
+                      const aNeedsAction = a.status === ProductionOrderStatus.PLANNED || a.status === ProductionOrderStatus.IN_PROGRESS
+                      const bNeedsAction = b.status === ProductionOrderStatus.PLANNED || b.status === ProductionOrderStatus.IN_PROGRESS
+                      
+                      if (aNeedsAction && !bNeedsAction) return -1
+                      if (!aNeedsAction && bNeedsAction) return 1
+                      
+                      // Within same category, sort by ID ascending
+                      return a.id - b.id
+                    })
+                    .map((po: ProductionOrder) => {
                     const order = getOrderDetails(po.sales_order_id)
                     return (
                       <tr key={po.id} className="border-b border-zinc-100">

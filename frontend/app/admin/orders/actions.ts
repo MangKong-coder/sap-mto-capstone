@@ -5,8 +5,6 @@
 
 "use server"
 
-import { revalidatePath } from "next/cache"
-
 import {
   completeProductionOrder,
   deleteOrder,
@@ -16,6 +14,7 @@ import {
   updateOrderStatus,
 } from "@/lib/dal/orders"
 import { SalesOrderStatus } from "@/lib/types"
+import { revalidateOrders } from "@/lib/cache-utils"
 
 /**
  * Start production for a sales order
@@ -23,7 +22,8 @@ import { SalesOrderStatus } from "@/lib/types"
 export async function startProductionAction(orderId: number) {
   try {
     await startProduction(orderId)
-    revalidatePath("/admin/orders")
+    revalidateOrders(orderId)
+    
     return { success: true, message: "Production started successfully" }
   } catch (error) {
     console.error("Failed to start production:", error)
@@ -53,8 +53,8 @@ export async function markOrderReadyAction(orderId: number) {
     // Mark production as in progress, then complete it
     await markProductionInProgress(latestProductionOrder.id)
     await completeProductionOrder(latestProductionOrder.id)
-
-    revalidatePath("/admin/orders")
+    revalidateOrders(orderId)
+    
     return { success: true, message: "Order marked as ready for delivery" }
   } catch (error) {
     console.error("Failed to mark order ready:", error)
@@ -71,7 +71,8 @@ export async function markOrderReadyAction(orderId: number) {
 export async function updateOrderStatusAction(orderId: number, status: SalesOrderStatus) {
   try {
     await updateOrderStatus(orderId, status)
-    revalidatePath("/admin/orders")
+    revalidateOrders(orderId)
+    
     return { success: true, message: "Order status updated successfully" }
   } catch (error) {
     console.error("Failed to update order status:", error)
@@ -88,7 +89,8 @@ export async function updateOrderStatusAction(orderId: number, status: SalesOrde
 export async function deleteOrderAction(orderId: number) {
   try {
     await deleteOrder(orderId)
-    revalidatePath("/admin/orders")
+    revalidateOrders(orderId)
+    
     return { success: true, message: "Order deleted successfully" }
   } catch (error) {
     console.error("Failed to delete order:", error)

@@ -1,7 +1,7 @@
 "use server"
 
 import { createOrder } from "@/lib/dal/orders"
-import { revalidatePath } from "next/cache"
+import { revalidateOrders } from "@/lib/cache-utils"
 import type { OrderDetail } from "@/lib/dal/orders"
 
 export async function createOrderAction(formData: FormData): Promise<OrderDetail> {
@@ -16,9 +16,8 @@ export async function createOrderAction(formData: FormData): Promise<OrderDetail
     const items = JSON.parse(itemsData)
     const newOrder = await createOrder(customerId, items)
 
-    // Revalidate paths that might show orders
-    revalidatePath("/orders")
-    revalidatePath("/admin/orders")
+    // Revalidate all order-related caches
+    revalidateOrders(newOrder.id)
 
     // Return the order data for client-side handling
     return newOrder

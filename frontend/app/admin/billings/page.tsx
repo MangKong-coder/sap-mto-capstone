@@ -56,7 +56,9 @@ export default async function BillingsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {deliveredOrders.map((order: any) => (
+                  {deliveredOrders
+                    .sort((a, b) => a.id - b.id)
+                    .map((order: any) => (
                     <tr key={order.id} className="border-b border-zinc-100">
                       <td className="py-4">
                         <Link href={`/orders/${order.id}`} className="text-sm text-red-500 hover:underline">
@@ -131,7 +133,9 @@ export default async function BillingsPage() {
                     </td>
                   </tr>
                 ) : (
-                  billings.map((billing: Billing) => {
+                  billings
+                    .sort((a, b) => a.id - b.id)
+                    .map((billing: Billing) => {
                     const order = getOrderDetails(billing.sales_order_id)
                     return (
                       <tr key={billing.id} className="border-b border-zinc-100">
