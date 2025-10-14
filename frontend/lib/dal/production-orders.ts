@@ -8,6 +8,19 @@ import { ApiResponseSchema } from '../schema/api-response'
 import { ProductionOrderStatus } from '../types'
 
 /**
+ * Zod schema for ProductionOrderItem validation
+ */
+export const ProductionOrderItemSchema = z.object({
+  id: z.number(),
+  product_id: z.number(),
+  product_name: z.string().nullable(),
+  quantity: z.number(),
+  subtotal: z.number(),
+})
+
+export type ProductionOrderItem = z.infer<typeof ProductionOrderItemSchema>
+
+/**
  * Zod schema for ProductionOrder validation
  */
 export const ProductionOrderSchema = z.object({
@@ -16,6 +29,7 @@ export const ProductionOrderSchema = z.object({
   status: z.string(),
   start_date: z.coerce.date().nullable(),
   end_date: z.coerce.date().nullable(),
+  items: z.array(ProductionOrderItemSchema).default([]),
 })
 
 export type ProductionOrder = z.infer<typeof ProductionOrderSchema>

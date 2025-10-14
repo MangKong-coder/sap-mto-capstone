@@ -96,7 +96,19 @@ export default async function ProductionOrdersPage() {
                             #{po.sales_order_id}
                           </Link>
                         </td>
-                        <td className="py-4 text-sm text-zinc-700">-</td>
+                        <td className="py-4 text-sm text-zinc-700">
+                          {po.items && po.items.length > 0 ? (
+                            <div className="space-y-1">
+                              {po.items.map((item) => (
+                                <div key={item.id} className="text-xs">
+                                  {item.product_name || `Product #${item.product_id}`} (×{item.quantity})
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
                         <td className="py-4 text-sm text-zinc-600">
                           {po.start_date ? new Date(po.start_date).toLocaleDateString() : "-"}
                         </td>

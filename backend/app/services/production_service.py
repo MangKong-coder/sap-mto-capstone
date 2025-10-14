@@ -5,11 +5,14 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 
-from sqlmodel import Session
+from sqlmodel import Session, select
+from sqlalchemy.orm import selectinload
 
 from app.models import (
     ProductionOrder,
     ProductionOrderStatus,
+    SalesOrder,
+    SalesOrderItem,
     SalesOrderStatus,
     current_utc_time,
 )
@@ -29,18 +32,21 @@ def list_production_orders(
     *,
     status: ProductionOrderStatus | str | None = None,
 ) -> list[ProductionOrder]:
-    """Return production orders optionally filtered by status."""
+    """Return production orders optionally filtered by status with sales order items."""
 
-    filters = None
+    statement = select(ProductionOrder).options(
+        selectinload(ProductionOrder.sales_order).selectinload(SalesOrder.items)
+    )
+    
     if status is not None:
         desired_status = (
             status
             if isinstance(status, ProductionOrderStatus)
             else ProductionOrderStatus(status)
         )
-        filters = [ProductionOrder.status == desired_status]
+        statement = statement.where(ProductionOrder.status == desired_status)
 
-    return production_repo.list(session, filters=filters)
+    return list(session.exec(statement).all())
 
 
 def start_production_for_order(session: Session, sales_order_id: int) -> ProductionOrder:

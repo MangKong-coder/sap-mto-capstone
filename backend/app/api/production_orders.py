@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from app.database import get_session
+from app.models import Product
 from app.schemas.common import SuccessResponse
 from app.schemas.production_orders import (
+    ProductionOrderItemResponse,
     ProductionOrderResponse,
     ProductionOrderStartRequest,
 )
@@ -21,11 +23,41 @@ def list_production_orders(
     status: str | None = Query(default=None, description="Filter by production status"),
     session: Session = Depends(get_session),
 ) -> SuccessResponse[list[ProductionOrderResponse]]:
-    """List all production orders, optionally filtered by status."""
+    """List all production orders with sales order items, optionally filtered by status."""
 
     try:
         production_orders = production_service.list_production_orders(session, status=status)
-        return SuccessResponse(data=production_orders)
+        
+        # Transform to response schema with items
+        response_data = []
+        for po in production_orders:
+            # Get product names for items
+            items_response = []
+            if po.sales_order and po.sales_order.items:
+                for item in po.sales_order.items:
+                    product = session.get(Product, item.product_id)
+                    items_response.append(
+                        ProductionOrderItemResponse(
+                            id=item.id,
+                            product_id=item.product_id,
+                            product_name=product.name if product else None,
+                            quantity=item.quantity,
+                            subtotal=item.subtotal,
+                        )
+                    )
+            
+            response_data.append(
+                ProductionOrderResponse(
+                    id=po.id,
+                    sales_order_id=po.sales_order_id,
+                    status=po.status.value,
+                    start_date=po.start_date,
+                    end_date=po.end_date,
+                    items=items_response,
+                )
+            )
+        
+        return SuccessResponse(data=response_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
