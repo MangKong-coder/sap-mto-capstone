@@ -1,6 +1,7 @@
 # SAP MTO Capstone Project
 
 Make-to-Order (MTO) system for managing sales orders, production, delivery, and billing workflows.
+
 Developed by James Kerby D. Domingo - 2025102635, for the capstone project of his team, CORES, Elisha Avila, Andrea Baladad, Rufamel Gascon, and Nichole Teodoro, in CSS100.
 
 ## Project Structure
