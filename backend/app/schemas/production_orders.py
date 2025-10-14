@@ -1,4 +1,4 @@
-"""Pydantic schemas for production order API endpoints."""
+# Production order schemas
 
 from __future__ import annotations
 
@@ -9,13 +9,11 @@ from pydantic import BaseModel
 
 
 class ProductionOrderStartRequest(BaseModel):
-    """Request payload to start production for a sales order."""
 
     sales_order_id: int
 
 
 class ProductionOrderItemResponse(BaseModel):
-    """Response model for a sales order item in production order context."""
 
     id: int
     product_id: int
@@ -25,7 +23,6 @@ class ProductionOrderItemResponse(BaseModel):
 
 
 class ProductionOrderResponse(BaseModel):
-    """Response model describing a production order."""
 
     id: int
     sales_order_id: int

@@ -1,4 +1,4 @@
-"""Production order service encapsulating manufacturing workflows."""
+# Production order management
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def list_production_orders(
     *,
     status: ProductionOrderStatus | str | None = None,
 ) -> list[ProductionOrder]:
-    """Return production orders optionally filtered by status with sales order items."""
+    # Get all production orders, filter by status if provided
 
     statement = select(ProductionOrder).options(
         selectinload(ProductionOrder.sales_order).selectinload(SalesOrder.items)
@@ -50,7 +50,7 @@ def list_production_orders(
 
 
 def start_production_for_order(session: Session, sales_order_id: int) -> ProductionOrder:
-    """Create a production order for the sales order and move it to in_production."""
+    # Start production for a sales order
 
     order = sales_order_repo.get_or_raise(session, sales_order_id)
     if order.status != SalesOrderStatus.created:
@@ -82,7 +82,7 @@ def start_production_for_order(session: Session, sales_order_id: int) -> Product
 
 
 def mark_production_in_progress(session: Session, production_id: int) -> ProductionOrder:
-    """Set the production order status to in_progress and stamp the start time."""
+    # Mark production as started
 
     production = production_repo.get_or_raise(session, production_id)
     if production.status != ProductionOrderStatus.planned:
@@ -106,7 +106,7 @@ def mark_production_in_progress(session: Session, production_id: int) -> Product
 
 
 def mark_production_complete(session: Session, production_id: int) -> ProductionOrder:
-    """Finalize production, set end date, and advance the sales order."""
+    # Complete production and move to delivery
 
     production = production_repo.get_or_raise(session, production_id)
     if production.status != ProductionOrderStatus.in_progress:

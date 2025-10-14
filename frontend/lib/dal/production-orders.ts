@@ -1,15 +1,9 @@
-/**
- * Production Orders Data Access Layer
- * Handles API requests, response validation, and data transformation for production orders
- */
+// Production orders data access
 
 import { z } from 'zod'
 import { ApiResponseSchema } from '../schema/api-response'
 import { ProductionOrderStatus } from '../types'
 
-/**
- * Zod schema for ProductionOrderItem validation
- */
 export const ProductionOrderItemSchema = z.object({
   id: z.number(),
   product_id: z.number(),
@@ -20,9 +14,6 @@ export const ProductionOrderItemSchema = z.object({
 
 export type ProductionOrderItem = z.infer<typeof ProductionOrderItemSchema>
 
-/**
- * Zod schema for ProductionOrder validation
- */
 export const ProductionOrderSchema = z.object({
   id: z.number(),
   sales_order_id: z.number(),
@@ -34,9 +25,6 @@ export const ProductionOrderSchema = z.object({
 
 export type ProductionOrder = z.infer<typeof ProductionOrderSchema>
 
-/**
- * Zod schema for UpdateProductionStatusRequest validation
- */
 export const UpdateProductionStatusRequestSchema = z.object({
   status: z.string(),
 })
@@ -68,11 +56,6 @@ export async function updateProductionStatus(
   }
 }
 
-/**
- * Fetch all production orders from the API
- * @returns Promise resolving to array of production orders
- * @throws Error if API request fails or returns invalid response
- */
 export async function getProductionOrders(fetchOptions: RequestInit = {}): Promise<ProductionOrder[]> {
   try {
     const response = await fetch(`${assertApiBase()}/api/production-orders`, {
@@ -90,8 +73,6 @@ export async function getProductionOrders(fetchOptions: RequestInit = {}): Promi
     }
 
     const rawData = await response.json()
-
-    // Validate the API response structure using Zod
     const apiResponseSchema = ApiResponseSchema(z.array(ProductionOrderSchema))
     const apiResponse = apiResponseSchema.parse(rawData)
 
@@ -107,13 +88,6 @@ export async function getProductionOrders(fetchOptions: RequestInit = {}): Promi
   }
 }
 
-/**
- * Update production order status
- * @param productionId - The production order ID to update
- * @param status - The new status for the production order
- * @returns Promise resolving to the updated production order
- * @throws Error if API request fails or returns invalid response
- */
 export async function markProductionInProgress(productionId: number, fetchOptions: RequestInit = {}): Promise<ProductionOrder> {
   try {
     const response = await fetch(`${assertApiBase()}/api/production-orders/${productionId}/start`, {
@@ -131,8 +105,6 @@ export async function markProductionInProgress(productionId: number, fetchOption
     }
 
     const rawData = await response.json()
-
-    // Validate the API response structure using Zod
     const apiResponseSchema = ApiResponseSchema(ProductionOrderSchema)
     const apiResponse = apiResponseSchema.parse(rawData)
 
@@ -164,8 +136,6 @@ export async function completeProductionOrder(productionId: number, fetchOptions
     }
 
     const rawData = await response.json()
-
-    // Validate the API response structure using Zod
     const apiResponseSchema = ApiResponseSchema(ProductionOrderSchema)
     const apiResponse = apiResponseSchema.parse(rawData)
 

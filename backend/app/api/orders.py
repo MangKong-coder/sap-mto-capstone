@@ -1,4 +1,4 @@
-"""Orders API router implementation."""
+# Orders API endpoints
 
 from __future__ import annotations
 
@@ -24,7 +24,6 @@ def list_orders(
     customer_id: int | None = Query(default=None, description="Filter by customer ID"),
     session: Session = Depends(get_session),
 ) -> SuccessResponse[list[OrderSummaryResponse]]:
-    """Retrieve all sales orders, optionally filtered by status and/or customer ID."""
 
     try:
         orders = order_service.get_customer_orders(session, status=status, customer_id=customer_id)
@@ -38,7 +37,6 @@ def get_order(
     order_id: int,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[OrderDetailResponse]:
-    """Retrieve full order details including items, production, delivery, and billing."""
 
     try:
         order_details = order_service.get_order_details(session, order_id)
@@ -54,7 +52,6 @@ def create_order(
     order_data: OrderCreateRequest,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[OrderDetailResponse]:
-    """Create a new sales order with multiple items."""
 
     try:
         order = order_service.create_order_with_items(
@@ -74,7 +71,6 @@ def update_order_status(
     status_data: OrderStatusUpdateRequest,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[OrderDetailResponse]:
-    """Update order status (e.g., admin override or cancel)."""
 
     try:
         updated_order = order_service.update_order_status(
@@ -97,7 +93,6 @@ def delete_order(
     order_id: int,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[dict[str, str]]:
-    """Delete/cancel a sales order."""
 
     try:
         deleted = order_service.delete_order(session, order_id)

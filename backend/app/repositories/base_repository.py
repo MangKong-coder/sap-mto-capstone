@@ -1,4 +1,4 @@
-"""Shared repository abstractions for SQLModel-based data access."""
+# Base repository for CRUD operations
 
 from __future__ import annotations
 
@@ -12,14 +12,11 @@ T = TypeVar("T", bound=SQLModel)
 
 
 class BaseRepository(Generic[T]):
-    """Base class providing common CRUD utilities for repositories."""
 
     def __init__(self, model: Type[T]) -> None:
-        """Initialize the repository with a SQLModel type."""
         self.model = model
 
     def create(self, session: Session, obj_data: dict[str, Any]) -> T:
-        """Persist a new model instance using the provided attribute mapping."""
         obj = self.model(**obj_data)
         session.add(obj)
         session.commit()
@@ -27,11 +24,9 @@ class BaseRepository(Generic[T]):
         return obj
 
     def get(self, session: Session, entity_id: int) -> Optional[T]:
-        """Retrieve an entity by its identifier or return ``None`` when missing."""
         return session.get(self.model, entity_id)
 
     def get_or_raise(self, session: Session, entity_id: int) -> T:
-        """Retrieve an entity or raise ``EntityNotFoundError`` if absent."""
         entity = self.get(session, entity_id)
         if entity is None:
             raise EntityNotFoundError(self.model.__name__, entity_id)
@@ -45,7 +40,6 @@ class BaseRepository(Generic[T]):
         offset: int = 0,
         limit: Optional[int] = None,
     ) -> list[T]:
-        """Return a sequence of entities matching the optional filter set."""
         statement = select(self.model)
         if filters:
             for condition in filters:
@@ -57,7 +51,6 @@ class BaseRepository(Generic[T]):
         return session.exec(statement).all()
 
     def update(self, session: Session, entity_id: int, data: dict[str, Any]) -> T:
-        """Apply partial updates to an entity and return the refreshed instance."""
         entity = self.get_or_raise(session, entity_id)
         for key, value in data.items():
             setattr(entity, key, value)
@@ -67,7 +60,6 @@ class BaseRepository(Generic[T]):
         return entity
 
     def delete(self, session: Session, entity_id: int) -> bool:
-        """Remove an entity and return ``True``; raise if the entity is missing."""
         entity = self.get_or_raise(session, entity_id)
         session.delete(entity)
         session.commit()

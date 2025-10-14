@@ -1,7 +1,4 @@
-/**
- * Orders Data Access Layer
- * Provides typed helpers for interacting with sales orders endpoints.
- */
+// Orders data access
 
 import { z } from "zod"
 

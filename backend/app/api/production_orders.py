@@ -1,4 +1,4 @@
-"""Production orders API router implementation."""
+# Production orders API endpoints
 
 from __future__ import annotations
 
@@ -23,15 +23,13 @@ def list_production_orders(
     status: str | None = Query(default=None, description="Filter by production status"),
     session: Session = Depends(get_session),
 ) -> SuccessResponse[list[ProductionOrderResponse]]:
-    """List all production orders with sales order items, optionally filtered by status."""
+    # List production orders with items
 
     try:
         production_orders = production_service.list_production_orders(session, status=status)
         
-        # Transform to response schema with items
         response_data = []
         for po in production_orders:
-            # Get product names for items
             items_response = []
             if po.sales_order and po.sales_order.items:
                 for item in po.sales_order.items:
@@ -67,7 +65,6 @@ def start_production(
     request: ProductionOrderStartRequest,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[ProductionOrderResponse]:
-    """Start production for a given sales order."""
 
     try:
         production_order = production_service.start_production_for_order(
@@ -86,7 +83,6 @@ def mark_production_in_progress(
     production_id: int,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[ProductionOrderResponse]:
-    """Mark a production order as 'In Progress'."""
 
     try:
         production_order = production_service.mark_production_in_progress(
@@ -107,7 +103,6 @@ def mark_production_complete(
     production_id: int,
     session: Session = Depends(get_session),
 ) -> SuccessResponse[ProductionOrderResponse]:
-    """Mark production complete and update related sales order."""
 
     try:
         production_order = production_service.mark_production_complete(
