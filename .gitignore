@@ -88,3 +88,7 @@ uploads/
 Dockerfile.bak
 docker-compose.yml.bak
 *.pem
+
+specs/
+.cursor/
+.windsurf/
